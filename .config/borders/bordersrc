@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# JankyBorders - Hyprland Style Active Window Accent Borders
+# Theme: Tokyo Night / Electric Blue active border with rounded corners
+
+borders \
+    style=round \
+    width=4.0 \
+    hidpi=on \
+    active_color=0xff7aa2f7 \
+    inactive_color=0x4024283b \
+    background_color=0x201a1b26
