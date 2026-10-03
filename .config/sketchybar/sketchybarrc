@@ -2,21 +2,22 @@
 
 # ==============================================================================
 # Premium Hyprland Floating Islands - Split around MacBook Air M2 Camera Notch
-# Pixel-perfect alignment with AeroSpace window boundaries (padding=10, margin=0)
+# Frosted Glass Aesthetic: Translucent deep-slate background (0x990f172a)
+# Dynamic Weather Pill + Smart Occupied Workspaces
 # ==============================================================================
 source "$HOME/.config/sketchybar/colors.sh"
 
 export SKY_BLUE=0xff38bdf8
 export DEEP_CYAN=0xff06b6d4
-export TILE_BG=0xdd0f172a
-export TILE_BORDER=0x4538bdf8
+export TILE_BG=0x990f172a
+export TILE_BORDER=0x4038bdf8
 export ITEM_HIGHLIGHT=0x501e293b
 
 sketchybar --bar hidden=off
 sketchybar --remove '/.*/'
 
 # Transparent Bar Container spanning top of screen
-# padding_left=10 and padding_right=10 exactly matches AeroSpace outer.left=10 and outer.right=10
+# padding_left=10 and padding_right=10 matches AeroSpace outer.left=10 and outer.right=10
 sketchybar --bar \
   position=top \
   height=40 \
@@ -28,7 +29,7 @@ sketchybar --bar \
   padding_left=10 \
   padding_right=10
 
-# Default item typography & icon-to-label spacing (generous separation)
+# Default item typography & icon-to-label spacing
 sketchybar --default \
   icon.font="JetBrainsMono Nerd Font:Bold:13.5" \
   label.font="JetBrainsMono Nerd Font:SemiBold:12.5" \
@@ -42,7 +43,7 @@ sketchybar --default \
   background.corner_radius=16
 
 # ==============================================================================
-# LEFT ISLAND: Workspaces + Focused App (Left of camera notch)
+# LEFT PILL 1: Workspaces + Focused App (Leftmost)
 # ==============================================================================
 for sid in 1 2 3 4 5; do
   sketchybar --add item space."$sid" left \
@@ -81,8 +82,36 @@ sketchybar --add item front_app left \
                  label.padding_right=12 \
                  script='sketchybar --set $NAME label="$INFO"'
 
-sketchybar --add bracket left_island space.1 space.2 space.3 space.4 space.5 sep front_app \
-           --set left_island \
+sketchybar --add bracket pill_workspaces space.1 space.2 space.3 space.4 space.5 sep front_app \
+           --set pill_workspaces \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38 \
+                 background.blur_radius=30
+
+# Spacer between left pills
+sketchybar --add item spacer_left left \
+           --set spacer_left width=8
+
+# ==============================================================================
+# LEFT PILL 2: Dynamic Weather & Geolocation (Celsius)
+# ==============================================================================
+sketchybar --add item weather left \
+           --subscribe weather system_woke \
+           --set weather update_freq=600 \
+                         icon="󰖐" \
+                         icon.color="$SKY_BLUE" \
+                         icon.padding_left=10 \
+                         icon.padding_right=6 \
+                         label.color="$TEXT" \
+                         label.padding_right=12 \
+                         click_script="open 'x-apple.weather:'" \
+                         script="$HOME/.config/sketchybar/plugins/weather.sh"
+
+sketchybar --add bracket pill_weather weather \
+           --set pill_weather \
                  background.color="$TILE_BG" \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
@@ -91,7 +120,7 @@ sketchybar --add bracket left_island space.1 space.2 space.3 space.4 space.5 sep
                  background.blur_radius=30
 
 # ==============================================================================
-# RIGHT ISLAND 1: Clock & Battery (Primary Status Pill)
+# RIGHT PILL 1: Clock & Battery (Primary Status Pill)
 # ==============================================================================
 sketchybar --add item clock right \
            --set clock update_freq=10 \
@@ -127,7 +156,7 @@ sketchybar --add item spacer1 right \
            --set spacer1 width=8
 
 # ==============================================================================
-# RIGHT ISLAND 2: Network & Audio (Connectivity Pill)
+# RIGHT PILL 2: Network & Audio (Connectivity Pill)
 # ==============================================================================
 sketchybar --add item volume right \
            --subscribe volume volume_change \
@@ -161,7 +190,7 @@ sketchybar --add item spacer2 right \
            --set spacer2 width=8
 
 # ==============================================================================
-# RIGHT ISLAND 3: Hardware Metrics (CPU & RAM Performance Pill)
+# RIGHT PILL 3: Hardware Metrics (CPU & RAM Performance Pill)
 # ==============================================================================
 sketchybar --add item ram right \
            --set ram update_freq=15 \
