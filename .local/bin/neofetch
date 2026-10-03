@@ -3037,6 +3037,9 @@ get_resolution() {
             # If no refresh rate is empty.
             [[ "$resolution" == *"@ Hz"* ]] && \
                 resolution="${resolution//@ Hz}"
+            resolution="${resolution//@ -Hz/ @ 60Hz}"
+            resolution="${resolution// ,/,}"
+            resolution="${resolution%, }"
 
             [[ "${scale_factor%.*}" == 2 ]] && \
                 resolution="${resolution// @/@2x @}"
