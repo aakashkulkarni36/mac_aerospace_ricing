@@ -10,18 +10,19 @@
 # RIGHT CLUSTER:  [ Hardware CPU (Peach) & RAM (Cyan) ]  [ Volume ]  [ Wi-Fi ]  [ Battery & Clock ]
 # ==============================================================================
 source "$HOME/.config/sketchybar/colors.sh"
+[ -f "$HOME/.config/sketchybar/current_theme.sh" ] && source "$HOME/.config/sketchybar/current_theme.sh"
 
-export SKY_BLUE=0xff38bdf8
-export DEEP_CYAN=0xff06b6d4
+export SKY_BLUE="${THEME_ACCENT1:-0xff38bdf8}"
+export DEEP_CYAN="${THEME_ACCENT2:-0xff06b6d4}"
 
 # True Translucent Frosted Glass Palette
-export TILE_BG=0xc21e2d36
-export TILE_BORDER=0x3874c7ec
-export ITEM_HIGHLIGHT=0x3538bdf8
+export TILE_BG="${THEME_TILE_BG:-0xc21e2d36}"
+export TILE_BORDER="${THEME_TILE_BORDER:-0x3874c7ec}"
+export ITEM_HIGHLIGHT="${THEME_ITEM_HIGHLIGHT:-0x3538bdf8}"
 
 # Translucent Frosted Acrylic Popups (Native macOS Gaussian Glass Blur)
-export CARD_BG=0xd818252d
-export CARD_BORDER=0x4538bdf8
+export CARD_BG="${THEME_CARD_BG:-0xd818252d}"
+export CARD_BORDER="${THEME_CARD_BORDER:-0x4538bdf8}"
 export GLASS_DIVIDER=0x20ffffff
 
 # Remove all existing items to ensure clean state

@@ -45,6 +45,9 @@ outer.right      = 10
 # --- Quick Terminal Launch / Focus ---
 alt-t = 'exec-and-forget open -a iTerm'
 
+# --- Dynamic Wallpaper & Color Palette Switcher ---
+alt-w = 'exec-and-forget ~/.local/bin/switch-wallpaper next'
+
 # --- Focus Navigation (Vim keys) ---
 alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
 alt-j = 'focus --boundaries-action wrap-around-the-workspace down'

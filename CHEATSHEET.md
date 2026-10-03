@@ -11,6 +11,7 @@ Quick reference for your custom macOS Hyprland-inspired tiling setup. Run `aeros
 | `Alt + Shift + h` / `j` / `k` / `l` | **Move Window** | Swap/Move active window in that direction |
 | `Alt + t` | **Open Ghostty** | Launch fresh terminal session |
 | `Alt + f` | **Smart Fullscreen / Float** | Toggles fullscreen (moves background apps cleanly) |
+| `Alt + w` | **Cycle Wallpaper & Theme** | Cycles to next wallpaper and harmonizes SketchyBar, Borders & VS Code |
 
 ---
 
@@ -38,8 +39,20 @@ Quick reference for your custom macOS Hyprland-inspired tiling setup. Run `aeros
 ---
 
 ### 🎛️ 4. SketchyBar Island Highlights
-* **Left Pill 1**: Dynamic Workspaces (`1`, `2`, `3`...) with native app glyphs (`:code:`, `:safari:`, `:ghostty:`, etc.) showing exactly which apps are running on each workspace without blown-out colors.
-* **Left Pill 2**: Live Geolocation & Weather in Celsius.
-* **Right Pill 1**: Battery and Clock (with live seconds).
-* **Right Pill 2**: Wi-Fi status, volume percentage, and live interactive volume slider.
-* **Right Pill 3**: Live CPU and RAM usage breakdown.
+* **Left Pill 1**: Dynamic Weather (Static Anchor) with Celsius, wind, and hover HUD.
+* **Left Pill 2**: Workspaces (`1`, `2`, `3`...) with native app glyphs (`:code:`, `:safari:`, `:google_chrome:`, etc.) and active Front App.
+* **Right Pill 1**: Live Hardware Monitor (CPU % & RAM %) with detailed hover performance HUD and top resource consumers.
+* **Right Pill 2**: Volume percentage with live mute toggle.
+* **Right Pill 3**: Wi-Fi network connection state.
+* **Right Pill 4**: Battery percentage and Clock (with live seconds).
+
+---
+
+### 🎨 5. Dynamic Wallpaper & Theme Switching
+| Command / Shortcut | Action | Description |
+| :--- | :--- | :--- |
+| `Alt + w` | **Cycle Wallpaper** | Cycles sequentially through curated wallpapers (1 ➔ 2 ➔ 3 ➔ 1). |
+| `switch-wallpaper` | **Interactive Switcher** | Opens interactive menu showing active wallpaper and options. |
+| `switch-wallpaper status` | **Show Active Theme** | Prints current wallpaper, artist, and synchronized color tokens. |
+| `switch-wallpaper 1` / `2` / `3` | **Direct Select** | Selects `1` (Meadow Vista), `2` (Golden Highway), or `3` (Twilight Horizon). |
+| `switch-wallpaper next` / `prev` | **Cycle Navigation** | Steps forward or backward through the wallpaper circle. |

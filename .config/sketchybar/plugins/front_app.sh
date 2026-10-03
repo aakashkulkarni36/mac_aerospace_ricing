@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source "$HOME/.config/sketchybar/colors.sh"
+[ -f "$HOME/.config/sketchybar/current_theme.sh" ] && source "$HOME/.config/sketchybar/current_theme.sh"
 NAME="${NAME:-front_app}"
 source "$HOME/.config/sketchybar/plugins/icon_map.sh"
 
@@ -20,12 +21,12 @@ if [ "$icon_result" != ":default:" ]; then
   sketchybar --set "$NAME" \
     icon="$icon_result" \
     icon.font="sketchybar-app-font:Regular:15.0" \
-    icon.color="0xff38bdf8" \
+    icon.color="${THEME_ACCENT1:-0xff38bdf8}" \
     label="$APP_NAME"
 else
   sketchybar --set "$NAME" \
     icon="󱂬" \
     icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
-    icon.color="0xff38bdf8" \
+    icon.color="${THEME_ACCENT1:-0xff38bdf8}" \
     label="$APP_NAME"
 fi

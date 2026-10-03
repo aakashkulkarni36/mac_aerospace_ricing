@@ -6,7 +6,11 @@
 # - Seamless visual hierarchy between active, occupied, and empty workspaces
 
 source "$HOME/.config/sketchybar/colors.sh"
+[ -f "$HOME/.config/sketchybar/current_theme.sh" ] && source "$HOME/.config/sketchybar/current_theme.sh"
 source "$HOME/.config/sketchybar/plugins/icon_map.sh"
+
+WS_ACTIVE_BG="${THEME_WS_BG:-0x4038bdf8}"
+WS_ACTIVE_BORDER="${THEME_WS_BORDER:-0x8038bdf8}"
 
 SID="${1:-${NAME#space.}}"
 FOCUSED="${FOCUSED_WORKSPACE:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
@@ -55,8 +59,8 @@ if [ "$SID" = "$FOCUSED" ]; then
       label.padding_left=0 \
       label.padding_right=8 \
       background.drawing=on \
-      background.color=0x4038bdf8 \
-      background.border_color=0x8038bdf8 \
+      background.color="$WS_ACTIVE_BG" \
+      background.border_color="$WS_ACTIVE_BORDER" \
       background.border_width=1 \
       background.corner_radius=8 \
       background.height=24
@@ -71,8 +75,8 @@ if [ "$SID" = "$FOCUSED" ]; then
       icon.padding_right=8 \
       label.drawing=off \
       background.drawing=on \
-      background.color=0x4038bdf8 \
-      background.border_color=0x8038bdf8 \
+      background.color="$WS_ACTIVE_BG" \
+      background.border_color="$WS_ACTIVE_BORDER" \
       background.border_width=1 \
       background.corner_radius=8 \
       background.height=24

@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-
-# JankyBorders - Wallpaper Cohesive Cyan / Sky Blue Gradient
-# Sampled directly from wallhaven-5y3571: Electric Sky Blue (0xff38bdf8) into Vibrant Cyan (0xff06b6d4)
-
+# JankyBorders - Dynamic Wallpaper Palette: Meadow Vista
 borders \
     style=round \
     width=4.5 \

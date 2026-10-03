@@ -45,7 +45,10 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
 │       ├── aerospace-enforce-max-tiles         # Strict max-3 window limit per space
 │       ├── aerospace-rice-daemon               # Real-time event listener for auto-overflow
 │       ├── aerospace-smart-fullscreen          # Smart fullscreen stash & restore (Alt + f)
-│       └── aerospace-workspace-hook            # Space switch & dynamic pill update hook
+│       ├── aerospace-workspace-hook            # Space switch & dynamic pill update hook
+│       ├── macos-wallpaper                     # High-performance native Swift desktop picture utility
+│       ├── switch-wallpaper                    # Interactive wallpaper & system theme synchronizer
+│       └── neofetch                            # Lightweight system information tool
 ├── CHEATSHEET.md                     # Markdown shortcut reference
 ├── setup_vscode.sh                   # VS Code configuration sync script
 └── README.md
@@ -88,4 +91,22 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
    * Calibrated 10 pt gap on all four sides of tiled windows (left: 10, right: 10, bottom: 10, top gap from pill: 10 pt).
 10. **Zero Camera Notch Clearance**:
     * MacBook Air M2 camera notch (X ≈ 775 to 935) has over 100 pt buffer on either side with no pill overlap.
+11. **Dynamic Wallpaper & Cohesive Theming Engine (`Alt + w`)**:
+    * Curated 3 signature ultrawide wallpapers matching the serene narrative concept art aesthetic:
+      1. **Meadow Vista** (Stefan Hansson - [Wallhaven #5y3571](https://wallhaven.cc/w/5y3571)): Electric Sky Blue (`#38bdf8`) & Vibrant Cyan (`#06b6d4`), frosted slate cyan glass (`0xc21e2d36`).
+      2. **Golden Highway** (Guillem H. Pongiluppi - [Wallhaven #wekp5x](https://wallhaven.cc/w/wekp5x)): Amber Sunset Gold (`#f59e0b`) & Burnt Orange (`#ea580c`), frosted smoked amber glass (`0xc22b2219`).
+      3. **Twilight Horizon** (Simon Stålenhag - [Wallhaven #lm1z2l](https://wallhaven.cc/w/lm1z2l)): Electric Lavender Indigo (`#818cf8`) & Neon Horizon Cyan (`#38bdf8`), frosted twilight indigo glass (`0xc21f1e33`).
+    * **Full Synchronized Switching**:
+      * Instantly sets the macOS desktop across all connected displays via native `NSWorkspace` APIs.
+      * Updates SketchyBar frosted floating island backgrounds, pill borders, active space badges, and popup card themes (`current_theme.sh`).
+      * Updates JankyBorders active gradient on the fly without service restarts.
+      * Dynamically sets VS Code translucent editor background image and tab/focus accent colors.
+      * Emits a native macOS banner notification with audio chime detailing the newly applied theme.
+    * **CLI Command**:
+      * `switch-wallpaper`: Interactive selector displaying the active wallpaper and menu options.
+      * `switch-wallpaper next` / `prev`: Cycle forward or backward through the collection.
+      * `switch-wallpaper status`: Shows current wallpaper, artist, and live color tokens.
+      * `switch-wallpaper <1|2|3|meadow|highway|horizon>`: Instant direct theme activation.
+      * Available via aliases: `wallpaper-switcher` and `swp`.
+      * Mapped to global shortcut **`Alt + w`** in AeroSpace.
 
