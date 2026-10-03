@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Triggered on workspace change or window detection
+FOCUSED_WS="${AEROSPACE_FOCUSED_WORKSPACE:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
+
+# Enforce max 3 tiles on the active workspace
+~/.local/bin/aerospace-enforce-max-tiles "$FOCUSED_WS"
+
+# Trigger SketchyBar update
+sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED_WS" 2>/dev/null

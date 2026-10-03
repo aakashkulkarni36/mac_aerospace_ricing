@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Enforces a maximum of 3 tiled windows per workspace.
+# If a 4th window opens or lands on the workspace, overflows the newest window to the next workspace.
+
+TARGET_WS="${1:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
+
+# Get all tiled windows on this workspace
+WINS=$(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}")
+COUNT=$(echo "$WINS" | grep -v '^$' | wc -l | tr -d ' ')
+
+if [ "$COUNT" -gt 3 ]; then
+  # Target overflow workspace
+  OVERFLOW_WS=$((TARGET_WS + 1))
+  [ "$OVERFLOW_WS" -gt 9 ] && OVERFLOW_WS=9
+
+  # Move the 4th (and any subsequent) window to the overflow space
+  echo "$WINS" | tail -n +"$((COUNT - 3 + 1))" | while IFS= read -r extra_wid; do
+    [ -n "$extra_wid" ] && aerospace move-node-to-workspace --window-id "$extra_wid" "$OVERFLOW_WS" 2>/dev/null
+  done
+  sketchybar --trigger aerospace_workspace_change 2>/dev/null
+fi

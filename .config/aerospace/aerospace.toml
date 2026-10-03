@@ -19,11 +19,11 @@ after-startup-command = [
     'exec-and-forget sketchybar'
 ]
 
-# Notify SketchyBar on workspace change
+# Notify SketchyBar and enforce max-3 window tile limit on workspace change
 exec-on-workspace-change = [
     '/bin/bash',
     '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+    '~/.local/bin/aerospace-workspace-hook'
 ]
 
 # Hyprland-style Window Gaps (px)
@@ -40,6 +40,9 @@ outer.right      = 10
 # Modifier: alt (Option key)
 # ------------------------------------------------------------------------------
 [mode.main.binding]
+
+# --- Quick Terminal Launch / Focus ---
+alt-t = 'exec-and-forget open -a iTerm'
 
 # --- Focus Navigation (Vim keys) ---
 alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
@@ -75,8 +78,9 @@ alt-shift-backslash = 'join-with left'
 # --- Balance window sizes (50/50 master stack split) ---
 alt-b = 'balance-sizes'
 
-# --- Fullscreen & Floating ---
-alt-f       = 'fullscreen'
+# --- Smart Fullscreen & Floating ---
+# Smart Fullscreen: moves other windows to adjacent space so they don't hide behind, and restores them on toggle off
+alt-f       = 'exec-and-forget ~/.local/bin/aerospace-smart-fullscreen'
 alt-shift-f = 'layout floating tiling'
 
 # --- Workspace Switching (Explicit target) ---

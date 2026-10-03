@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# ANSI Color Codes
+CYAN=$'\033[38;2;56;189;248m'
+DEEP_CYAN=$'\033[38;2;6;182;212m'
+PEACH=$'\033[38;2;250;179;135m'
+GREEN=$'\033[38;2;166;227;161m'
+LAVENDER=$'\033[38;2;180;190;254m'
+BOLD=$'\033[1m'
+RESET=$'\033[0m'
+
+cat << INNER_EOF
+${CYAN}${BOLD}╔══════════════════════════════════════════════════════════════════════╗
+║              🚀 AeroSpace & Hyprland Tiling Keybindings              ║
+║               Modifier: Alt (Option / ⌥ key on macOS)                ║
+╚══════════════════════════════════════════════════════════════════════╝${RESET}
+
+${DEEP_CYAN}${BOLD}━━ 🪟 1. Focus Navigation (Vim Keys) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${LAVENDER}Alt + h${RESET}           Focus Left
+  ${LAVENDER}Alt + j${RESET}           Focus Down
+  ${LAVENDER}Alt + k${RESET}           Focus Up
+  ${LAVENDER}Alt + l${RESET}           Focus Right
+
+${DEEP_CYAN}${BOLD}━━ 🔄 2. Window Movement ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${LAVENDER}Alt + Shift + h${RESET}     Move / Swap Window Left
+  ${LAVENDER}Alt + Shift + j${RESET}     Move / Swap Window Down
+  ${LAVENDER}Alt + Shift + k${RESET}     Move / Swap Window Up
+  ${LAVENDER}Alt + Shift + l${RESET}     Move / Swap Window Right
+
+${DEEP_CYAN}${BOLD}━━ 🧩 3. Hyprland Master-Stack Layouts ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${LAVENDER}Alt + \\${RESET}           Join with Right (Master + Column split)
+  ${LAVENDER}Alt + Shift + \\${RESET}     Join with Left
+  ${LAVENDER}Alt + -${RESET}           Join with Below (Stack windows vertically)
+  ${LAVENDER}Alt + Shift + -${RESET}     Join with Above
+  ${LAVENDER}Alt + /${RESET}           Toggle Row / Column Split Orientation
+  ${LAVENDER}Alt + Shift + Space${RESET} Reset & Flatten nested tiles to clean grid
+
+${DEEP_CYAN}${BOLD}━━ 🏃 4. Workspaces & App Dispatching ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${PEACH}Alt + 1..5${RESET}          Jump to Space 1 through 5 (MacBook Display)
+  ${PEACH}Alt + Shift + 1..5${RESET}  Move active window to Space 1..5
+  ${PEACH}Alt + 6..9${RESET}          Jump to Space 6..9 (Secondary / HDMI Display)
+  ${PEACH}Alt + Tab${RESET}           Quick Switch between last two active spaces
+
+${DEEP_CYAN}${BOLD}━━ ⚡ 5. Window State, Fullscreen & Launch ━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${CYAN}Alt + t${RESET}             Quick launch / focus Terminal (iTerm2)
+  ${CYAN}Alt + f${RESET}             Smart Fullscreen (auto-stashes other windows)
+  ${CYAN}Alt + Shift + f${RESET}     Toggle Floating / Tiling mode
+  ${CYAN}Alt + Arrows${RESET}        Direct resize width / height (±64px)
+  ${CYAN}Alt + b${RESET}             Balance window sizes evenly
+  ${CYAN}Alt + Shift + r${RESET}     Instant reload AeroSpace config
+${CYAN}──────────────────────────────────────────────────────────────────────${RESET}
+INNER_EOF
