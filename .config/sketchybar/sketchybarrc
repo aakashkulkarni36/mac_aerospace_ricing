@@ -1,22 +1,34 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Premium Hyprland Floating Islands - Split around MacBook Air M2 Camera Notch
-# Frosted Glass Aesthetic: Translucent deep-slate background (0x990f172a)
-# Dynamic Weather Pill + Smart Dynamic Workspaces + App Glyphs + Volume Slider
+# Premium Frosted Glass Floating Islands - Precision Sized for MacBook Air M2
+# True Frosted Glass: 0x650f172a with blur_radius=50 (macOS WindowServer Gaussian Blur)
+# Zero Camera Notch Collision: Over 100pt clearance from Notch [775, 935]
+#
+# LEFT CLUSTER:   [ Weather (Static Anchor) ]  [ Workspaces 1-9 | Front App ]
+# CENTER:         --- [ CAMERA NOTCH ZERO-OVERLAP GAP ] ---
+# RIGHT CLUSTER:  [ Hardware CPU (Peach) & RAM (Cyan) ]  [ Volume ]  [ Wi-Fi ]  [ Battery & Clock ]
 # ==============================================================================
 source "$HOME/.config/sketchybar/colors.sh"
 
 export SKY_BLUE=0xff38bdf8
 export DEEP_CYAN=0xff06b6d4
-export TILE_BG=0x990f172a
-export TILE_BORDER=0x4038bdf8
-export ITEM_HIGHLIGHT=0x501e293b
 
-sketchybar --bar hidden=off
+# True Translucent Frosted Glass Palette
+export TILE_BG=0xc21e2d36
+export TILE_BORDER=0x3874c7ec
+export ITEM_HIGHLIGHT=0x3538bdf8
+
+# Translucent Frosted Acrylic Popups (Native macOS Gaussian Glass Blur)
+export CARD_BG=0xd818252d
+export CARD_BORDER=0x4538bdf8
+export GLASS_DIVIDER=0x20ffffff
+
+# Remove all existing items to ensure clean state
 sketchybar --remove '/.*/'
+sketchybar --bar hidden=off
 
-# Explicitly register custom event for AeroSpace workspace sync
+# Register custom events
 sketchybar --add event aerospace_workspace_change
 
 # Transparent Bar Container spanning top of screen
@@ -28,13 +40,13 @@ sketchybar --bar \
   border_width=0 \
   margin=0 \
   y_offset=4 \
-  padding_left=10 \
-  padding_right=10
+  padding_left=12 \
+  padding_right=12
 
 # Default item typography & icon-to-label spacing
 sketchybar --default \
-  icon.font="JetBrainsMono Nerd Font:Bold:13.5" \
-  label.font="JetBrainsMono Nerd Font:SemiBold:12.5" \
+  icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
+  label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
   icon.color="$TEXT" \
   label.color="$TEXT" \
   icon.padding_left=8 \
@@ -45,23 +57,102 @@ sketchybar --default \
   background.corner_radius=16
 
 # ==============================================================================
-# LEFT PILL 1: Workspaces + Focused App (Leftmost)
+# LEFT PILL 1: Dynamic Weather (Leftmost Static Anchor - Zero Jitter)
+# ==============================================================================
+sketchybar --add item weather left \
+           --subscribe weather system_woke mouse.entered mouse.exited mouse.clicked \
+           --set weather update_freq=600 \
+                         icon="󰖐" \
+                         icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
+                         icon.color="$SKY_BLUE" \
+                         icon.padding_left=12 \
+                         icon.padding_right=6 \
+                         label.color="$TEXT" \
+                         label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                         label.padding_right=14 \
+                         popup.align=left \
+                         popup.blur_radius=50 \
+                         popup.background.color="$CARD_BG" \
+                         popup.background.border_color="$CARD_BORDER" \
+                         popup.background.border_width=1.5 \
+                         popup.background.corner_radius=20 \
+                         popup.background.shadow.drawing=on \
+                         popup.background.shadow.color=0x60000000 \
+                         popup.background.shadow.distance=14 \
+                         popup.y_offset=4 \
+                         script="$HOME/.config/sketchybar/plugins/weather.sh"
+
+# Native macOS Weather Card Frosted Glass Popup
+sketchybar --add item weather.card.loc popup.weather \
+           --set weather.card.loc icon="󰍎" icon.color="$PEACH" label="McKinney, Texas" \
+                                  label.font="JetBrainsMono Nerd Font Propo:Bold:13.0" label.color="$TEXT" \
+                                  icon.padding_left=14 icon.padding_right=6 label.padding_right=14 \
+           --add item weather.card.hero popup.weather \
+           --set weather.card.hero icon.font="JetBrainsMono Nerd Font Propo:Bold:34.0" \
+                                   icon.padding_left=14 icon.padding_right=10 \
+                                   label.font="JetBrainsMono Nerd Font Propo:ExtraBold:24.0" \
+                                   label.color=0xffffffff label.padding_right=14 \
+                                   background.drawing=off \
+           --add item weather.card.condition popup.weather \
+           --set weather.card.condition icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                                        label.color="$SKY_BLUE" label.padding_left=14 label.padding_right=14 \
+           --add item weather.card.sep popup.weather \
+           --set weather.card.sep width=240 icon.drawing=off label.drawing=off \
+                                  background.drawing=on background.color="$GLASS_DIVIDER" background.height=1 \
+           --add item weather.card.range popup.weather \
+           --set weather.card.range icon="󰔏" icon.color="$PEACH" label.font="JetBrainsMono Nerd Font Propo:SemiBold:11.5" \
+                                    label.color="$TEXT" label.padding_left=0 label.padding_right=14 icon.padding_left=14 icon.padding_right=6 \
+           --add item weather.card.stats popup.weather \
+           --set weather.card.stats icon="󰖑" icon.color="$TEAL" label.font="JetBrainsMono Nerd Font Propo:SemiBold:11.5" \
+                                    label.color="$TEXT" label.padding_left=0 label.padding_right=14 icon.padding_left=14 icon.padding_right=6 \
+           --add item weather.card.wind popup.weather \
+           --set weather.card.wind icon="󰖝" icon.color="$DEEP_CYAN" label.font="JetBrainsMono Nerd Font Propo:SemiBold:11.5" \
+                                   label.color="$TEXT" label.padding_left=0 label.padding_right=14 icon.padding_left=14 icon.padding_right=6 \
+           --add item weather.card.sep2 popup.weather \
+           --set weather.card.sep2 width=240 icon.drawing=off label.drawing=off \
+                                   background.drawing=on background.color="$GLASS_DIVIDER" background.height=1 \
+           --add item weather.card.action popup.weather \
+           --set weather.card.action icon="↗" icon.color="$SUBTEXT0" label="Open Apple Weather" \
+                                     label.font="JetBrainsMono Nerd Font Propo:Italic:11.0" label.color="$SUBTEXT0" \
+                                     icon.padding_left=14 icon.padding_right=6 label.padding_right=14 click_script="open 'x-apple.weather:'"
+
+
+# Subscribe weather popup card items for seamless hover bridging
+for item in weather.card.loc weather.card.hero weather.card.condition weather.card.range weather.card.stats weather.card.wind weather.card.action; do
+  sketchybar --subscribe "$item" mouse.entered mouse.exited              --set "$item" script="$HOME/.config/sketchybar/plugins/weather_hover.sh"
+done
+
+sketchybar --add bracket pill_weather weather \
+           --set pill_weather \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38
+
+sketchybar --add item spacer_left left \
+           --set spacer_left width=8
+
+# ==============================================================================
+# LEFT PILL 2: Dynamic Workspaces (1-9) + Focused Application
 # ==============================================================================
 sketchybar --add item pad_left left \
-           --set pad_left width=6 icon.drawing=off label.drawing=off
+           --set pad_left width=4 icon.drawing=off label.drawing=off
 
-for sid in 1 2 3 4 5; do
+for sid in 1 2 3 4 5 6 7 8 9; do
   sketchybar --add item space."$sid" left \
              --subscribe space."$sid" aerospace_workspace_change \
              --set space."$sid" \
-                   label="$sid" \
-                   label.font="sketchybar-app-font:Regular:12.0" \
-                   label.padding_left=6 \
-                   label.padding_right=6 \
-                   icon.drawing=off \
+                   icon="$sid" \
+                   icon.font="JetBrainsMono Nerd Font Propo:ExtraBold:13.5" \
+                   icon.padding_left=8 \
+                   icon.padding_right=5 \
+                   label.font="sketchybar-app-font:Regular:14.0" \
+                   label.padding_left=1 \
+                   label.padding_right=8 \
                    background.color="$ITEM_HIGHLIGHT" \
-                   background.corner_radius=8 \
-                   background.height=24 \
+                   background.corner_radius=9 \
+                   background.height=25 \
                    background.drawing=off \
                    script="$HOME/.config/sketchybar/plugins/aerospace.sh $sid" \
                    click_script="aerospace workspace $sid"
@@ -69,6 +160,7 @@ done
 
 sketchybar --add item sep left \
            --set sep label="|" \
+                     label.font="JetBrainsMono Nerd Font Propo:Medium:12.5" \
                      label.color="$OVERLAY0" \
                      label.padding_left=4 \
                      label.padding_right=6 \
@@ -78,59 +170,35 @@ sketchybar --add item front_app left \
            --subscribe front_app front_app_switched aerospace_workspace_change \
            --set front_app \
                  icon="󱂬" \
-                 icon.font="JetBrainsMono Nerd Font:Bold:13.5" \
+                 icon.font="sketchybar-app-font:Regular:15.0" \
                  icon.color="$SKY_BLUE" \
                  icon.padding_left=6 \
-                 icon.padding_right=6 \
+                 icon.padding_right=7 \
                  label.color="$TEXT" \
-                 label.font="JetBrainsMono Nerd Font:SemiBold:12.5" \
-                 label.padding_right=10 \
-                 script='sketchybar --set $NAME label="${INFO:-$(aerospace list-windows --focused --format "%{app-name}" 2>/dev/null || echo "Desktop")}"'
+                 label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                 label.padding_right=12 \
+                 click_script="$HOME/.local/bin/aerospace-smart-fullscreen" \
+                 script="$HOME/.config/sketchybar/plugins/front_app.sh"
 
-sketchybar --add bracket pill_workspaces pad_left space.1 space.2 space.3 space.4 space.5 sep front_app \
+sketchybar --add bracket pill_workspaces pad_left space.1 space.2 space.3 space.4 space.5 space.6 space.7 space.8 space.9 sep front_app \
            --set pill_workspaces \
                  background.color="$TILE_BG" \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
-                 background.height=38 \
-
-# Spacer between left pills
-sketchybar --add item spacer_left left \
-           --set spacer_left width=8
+                 background.height=38
 
 # ==============================================================================
-# LEFT PILL 2: Dynamic Weather & Geolocation (Celsius)
-# ==============================================================================
-sketchybar --add item weather left \
-           --subscribe weather system_woke \
-           --set weather update_freq=600 \
-                         icon="󰖐" \
-                         icon.color="$SKY_BLUE" \
-                         icon.padding_left=10 \
-                         icon.padding_right=6 \
-                         label.color="$TEXT" \
-                         label.padding_right=12 \
-                         click_script="open 'x-apple.weather:'" \
-                         script="$HOME/.config/sketchybar/plugins/weather.sh"
-
-sketchybar --add bracket pill_weather weather \
-           --set pill_weather \
-                 background.color="$TILE_BG" \
-                 background.border_color="$TILE_BORDER" \
-                 background.border_width=1.5 \
-                 background.corner_radius=20 \
-                 background.height=38 \
-
-# ==============================================================================
-# RIGHT PILL 1: Clock & Battery (Primary Status Pill)
+# RIGHT PILL 1: Clock & Battery (Rightmost Anchor)
 # ==============================================================================
 sketchybar --add item clock right \
-           --set clock update_freq=1 \
+           --set clock update_freq=10 \
                        icon="󱑎" \
+                       icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
                        icon.color="$SKY_BLUE" \
                        icon.padding_left=8 \
                        icon.padding_right=6 \
+                       label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
                        label.padding_right=12 \
                        click_script="open -a Calendar" \
                        script="$HOME/.config/sketchybar/plugins/clock.sh"
@@ -138,10 +206,12 @@ sketchybar --add item clock right \
 sketchybar --add item battery right \
            --subscribe battery power_source_change system_woke \
            --set battery update_freq=60 \
+                         icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
                          icon.color="$GREEN" \
                          icon.padding_left=10 \
                          icon.padding_right=6 \
-                         label.padding_right=10 \
+                         label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                         label.padding_right=8 \
                          click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
                          script="$HOME/.config/sketchybar/plugins/battery.sh"
 
@@ -151,90 +221,188 @@ sketchybar --add bracket pill_clock_battery battery clock \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
-                 background.height=38 \
+                 background.height=38
 
-# Spacer between right pills
-sketchybar --add item spacer1 right \
-           --set spacer1 width=8
+sketchybar --add item spacer_right1 right \
+           --set spacer_right1 width=8
 
 # ==============================================================================
-# RIGHT PILL 2: Network & Audio (Connectivity Pill + Volume Slider)
+# RIGHT PILL 2: Wi-Fi Connectivity
 # ==============================================================================
-sketchybar --add slider volume.slider right 46 \
-           --set volume.slider \
-                 slider.highlight_color="$SKY_BLUE" \
-                 slider.background.color=0x40334155 \
-                 slider.background.height=6 \
-                 slider.background.corner_radius=3 \
-                 slider.knob=󰝤 \
-                 slider.knob.font="JetBrainsMono Nerd Font:Bold:10.0" \
-                 slider.knob.color=0xffffffff \
-                 slider.percentage=$(osascript -e "output volume of (get volume settings)" 2>/dev/null || echo 50) \
-                 padding_left=0 \
-                 padding_right=8 \
-                 script="$HOME/.config/sketchybar/plugins/volume_slider.sh" \
-           --subscribe volume.slider volume_change mouse.clicked
-
-sketchybar --add item volume right \
-           --subscribe volume volume_change \
-           --set volume icon.color="$YELLOW" \
-                        icon.padding_left=8 \
-                        icon.padding_right=4 \
-                        label.padding_right=4 \
-                        click_script="osascript -e 'set volume output muted not (output muted of (get volume settings))' && sketchybar --trigger volume_change" \
-                        script="$HOME/.config/sketchybar/plugins/volume.sh"
-
 sketchybar --add item wifi right \
            --set wifi update_freq=20 \
+                      icon="󰤨" \
+                      icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
                       icon.color="$DEEP_CYAN" \
                       icon.padding_left=10 \
                       icon.padding_right=6 \
-                      label.padding_right=8 \
+                      label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                      label.padding_right=10 \
                       click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
                       script="$HOME/.config/sketchybar/plugins/wifi.sh"
 
-sketchybar --add bracket pill_network_audio wifi volume volume.slider \
-           --set pill_network_audio \
+sketchybar --add bracket pill_wifi wifi \
+           --set pill_wifi \
                  background.color="$TILE_BG" \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
-                 background.height=38 \
+                 background.height=38
 
-# Spacer between right pills
-sketchybar --add item spacer2 right \
-           --set spacer2 width=8
+sketchybar --add item spacer_right2 right \
+           --set spacer_right2 width=8
 
 # ==============================================================================
-# RIGHT PILL 3: Hardware Metrics (CPU & RAM Performance Pill)
+# RIGHT PILL 3: Volume Island (Interactive Scroll & Click)
+# ==============================================================================
+sketchybar --add item volume right \
+           --subscribe volume volume_change mouse.scrolled \
+           --set volume icon.font="JetBrainsMono Nerd Font Propo:Bold:16.0" \
+                        icon.color="$YELLOW" \
+                        icon.padding_left=10 \
+                        icon.padding_right=6 \
+                        label.font="JetBrainsMono Nerd Font Propo:Bold:12.5" \
+                        label.padding_right=10 \
+                        click_script="osascript -e 'set volume output muted not (output muted of (get volume settings))' && sketchybar --trigger volume_change" \
+                        script="$HOME/.config/sketchybar/plugins/volume.sh"
+
+sketchybar --add bracket pill_volume volume \
+           --set pill_volume \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38
+
+sketchybar --add item spacer_right3 right \
+           --set spacer_right3 width=8
+
+# ==============================================================================
+# RIGHT PILL 4: Hardware Island (CPU Peach 󰍛 & RAM Deep Cyan 󰘚)
+# Added right-to-left: ram -> hw_sep -> cpu. Displays on screen as [ cpu | ram ]
+# Entire pill reacts to hover to reveal centered frosted HUD card directly underneath
 # ==============================================================================
 sketchybar --add item ram right \
-           --set ram update_freq=15 \
-                     icon.color="$MAROON" \
-                     icon.padding_left=8 \
-                     icon.padding_right=6 \
-                     label.padding_right=12 \
-                     click_script="open -a 'Activity Monitor'" \
-                     script="$HOME/.config/sketchybar/plugins/ram.sh"
+           --subscribe ram mouse.entered mouse.exited mouse.clicked \
+           --set ram icon="󰘚" \
+                     icon.font="JetBrainsMono Nerd Font Propo:Bold:15.5" \
+                     icon.color="$DEEP_CYAN" \
+                     icon.padding_left=4 \
+                     icon.padding_right=4 \
+                     label="RAM 0%" \
+                     label.font="JetBrainsMono Nerd Font Propo:Bold:12.0" \
+                     label.padding_right=10 \
+                     script="$HOME/.config/sketchybar/plugins/hardware_hover.sh"
+
+sketchybar --add item hw_sep right \
+           --subscribe hw_sep mouse.entered mouse.exited mouse.clicked \
+           --set hw_sep label="|" \
+                        label.font="JetBrainsMono Nerd Font Propo:Medium:12.0" \
+                        label.color="$OVERLAY0" \
+                        label.padding_left=2 \
+                        label.padding_right=4 \
+                        icon.drawing=off \
+                        popup.align=center \
+                        popup.blur_radius=50 \
+                        popup.background.color="$CARD_BG" \
+                        popup.background.border_color="$CARD_BORDER" \
+                        popup.background.border_width=1.5 \
+                        popup.background.corner_radius=20 \
+                        popup.background.shadow.drawing=on \
+                        popup.background.shadow.color=0x60000000 \
+                        popup.background.shadow.distance=14 \
+                        popup.y_offset=4 \
+                        script="$HOME/.config/sketchybar/plugins/hardware_hover.sh"
 
 sketchybar --add item cpu right \
-           --set cpu update_freq=10 \
+           --subscribe cpu mouse.entered mouse.exited mouse.clicked \
+           --set cpu update_freq=3 \
+                     icon="󰍛" \
+                     icon.font="JetBrainsMono Nerd Font Propo:Bold:15.5" \
                      icon.color="$PEACH" \
                      icon.padding_left=10 \
-                     icon.padding_right=6 \
-                     label.padding_right=10 \
-                     click_script="open -a 'Activity Monitor'" \
-                     script="$HOME/.config/sketchybar/plugins/cpu.sh"
+                     icon.padding_right=4 \
+                     label="CPU 0%" \
+                     label.font="JetBrainsMono Nerd Font Propo:Bold:12.0" \
+                     label.padding_right=4 \
+                     script="$HOME/.config/sketchybar/plugins/hardware.sh"
 
-sketchybar --add bracket pill_hardware cpu ram \
+sketchybar --add bracket pill_hardware cpu hw_sep ram \
            --set pill_hardware \
                  background.color="$TILE_BG" \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
-                 background.height=38 \
+                 background.height=38
 
-# Sync bar
+# ------------------------------------------------------------------------------
+# Frosted Glass Hardware Performance HUD (Centered Exactly Underneath hw_sep)
+# ------------------------------------------------------------------------------
+sketchybar --add item hw.popup.title popup.hw_sep \
+           --set hw.popup.title icon="󰍛" icon.color="$SKY_BLUE" label="System Hardware Monitor" \
+                                label.font="JetBrainsMono Nerd Font Propo:Bold:13.0" label.color="$TEXT" \
+                                icon.padding_left=14 icon.padding_right=6 label.padding_right=14 \
+           --add item hw.popup.sep1 popup.hw_sep \
+           --set hw.popup.sep1 width=250 icon.drawing=off label.drawing=off \
+                               background.drawing=on background.color="$GLASS_DIVIDER" background.height=1 \
+           --add item hw.popup.hdr_cpu popup.hw_sep \
+           --set hw.popup.hdr_cpu icon="󰍛" icon.color="$PEACH" label="CPU Load: 0% · Apple Silicon" \
+                                  label.font="JetBrainsMono Nerd Font Propo:Bold:12.0" label.color="$PEACH" \
+                                  icon.padding_left=14 icon.padding_right=6 label.padding_right=14 \
+           --add graph hw.popup.cpu_graph popup.hw_sep 250 \
+           --set hw.popup.cpu_graph graph.color="$PEACH" \
+                                    graph.fill_color=0x35fab387 \
+                                    graph.line_width=2.0 \
+                                    background.drawing=off \
+                                    background.height=34 \
+           --add item hw.top_cpu1 popup.hw_sep \
+           --set hw.top_cpu1 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.top_cpu2 popup.hw_sep \
+           --set hw.top_cpu2 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.top_cpu3 popup.hw_sep \
+           --set hw.top_cpu3 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.popup.sep2 popup.hw_sep \
+           --set hw.popup.sep2 width=250 icon.drawing=off label.drawing=off \
+                               background.drawing=on background.color="$GLASS_DIVIDER" background.height=1 \
+           --add item hw.popup.hdr_mem popup.hw_sep \
+           --set hw.popup.hdr_mem icon="󰘚" icon.color="$DEEP_CYAN" label="Memory: 0% · Unified Memory" \
+                                  label.font="JetBrainsMono Nerd Font Propo:Bold:12.0" label.color="$DEEP_CYAN" \
+                                  icon.padding_left=14 icon.padding_right=6 label.padding_right=14 \
+           --add graph hw.popup.ram_graph popup.hw_sep 250 \
+           --set hw.popup.ram_graph graph.color="$DEEP_CYAN" \
+                                    graph.fill_color=0x3506b6d4 \
+                                    graph.line_width=2.0 \
+                                    background.drawing=off \
+                                    background.height=34 \
+           --add item hw.top_mem1 popup.hw_sep \
+           --set hw.top_mem1 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.top_mem2 popup.hw_sep \
+           --set hw.top_mem2 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.top_mem3 popup.hw_sep \
+           --set hw.top_mem3 icon.drawing=off label.font="JetBrainsMono Nerd Font Propo:Medium:11.5" \
+                             label.color="$TEXT" label.padding_left=16 label.padding_right=14 \
+           --add item hw.popup.sep3 popup.hw_sep \
+           --set hw.popup.sep3 width=250 icon.drawing=off label.drawing=off \
+                               background.drawing=on background.color="$GLASS_DIVIDER" background.height=1 \
+           --add item hw.popup.action popup.hw_sep \
+           --set hw.popup.action icon="↗" icon.color="$SUBTEXT0" label="Open Activity Monitor" \
+                                 label.font="JetBrainsMono Nerd Font Propo:Italic:11.0" label.color="$SUBTEXT0" \
+                                 icon.padding_left=14 icon.padding_right=6 label.padding_right=14 click_script="open -a 'Activity Monitor'"
+
+
+# Subscribe hardware popup items for seamless hover bridging
+for item in hw.popup.title hw.popup.hdr_cpu hw.popup.cpu_graph hw.top_cpu1 hw.top_cpu2 hw.top_cpu3 hw.popup.hdr_mem hw.popup.ram_graph hw.top_mem1 hw.top_mem2 hw.top_mem3 hw.popup.action; do
+  sketchybar --subscribe "$item" mouse.entered mouse.exited              --set "$item" script="$HOME/.config/sketchybar/plugins/hardware_hover.sh"
+done
+
+# ==============================================================================
+# INITIAL SYNCHRONIZATION
+# ==============================================================================
 sketchybar --update
 sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused 2>/dev/null || echo 1)"
 sketchybar --trigger volume_change

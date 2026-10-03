@@ -1,35 +1,75 @@
 #!/usr/bin/env bash
 
-# Robustly enforces:
-# 1. Any time a 3rd window opens (or arrives from dock/unhide/fullscreen exit), automatically arrange:
-#    - Left half: full-height Master window
-#    - Right half: two windows stacked vertically (up and down)
-# 2. Strict max-3 limit: Any 4th (or extra) window is immediately overflowed to the next workspace ($N+1).
+# ==============================================================================
+# Strict Max-3 Tiles Enforcer & Auto-Master Arranger
+# Compatible with macOS default bash 3.2
+# ==============================================================================
 
 TARGET_WS="${1:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
 
 # Get all non-floating window IDs on this workspace
-WINS=($(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}"))
+WINS=()
+while IFS='|' read -r wid layout; do
+  wid="$(echo "$wid" | tr -d ' ')"
+  layout="$(echo "$layout" | tr -d ' ')"
+  [ -z "$wid" ] && continue
+  if [ "$layout" != "floating" ]; then
+    WINS+=("$wid")
+  fi
+done < <(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}|%{window-layout}" 2>/dev/null)
+
 COUNT=${#WINS[@]}
 
-# If more than 3 windows exist, overflow the extra windows to the next workspace
+# 1. Enforce strict max-3: Any 4th or subsequent window is immediately moved to next available space
 if [ "$COUNT" -gt 3 ]; then
-  OVERFLOW_WS=$((TARGET_WS + 1))
-  [ "$OVERFLOW_WS" -gt 9 ] && OVERFLOW_WS=9
+  # Determine destination workspace (find next workspace with < 3 windows)
+  NEXT_WS=$((TARGET_WS + 1))
+  [ "$NEXT_WS" -gt 9 ] && NEXT_WS=1
 
+  TARGET_DEST="$NEXT_WS"
+  CANDIDATE="$NEXT_WS"
+  for i in 1 2 3 4 5 6 7 8; do
+    win_cnt="$(aerospace list-windows --workspace "$CANDIDATE" 2>/dev/null | wc -l | tr -d ' ')"
+    if [ "$win_cnt" -lt 3 ]; then
+      TARGET_DEST="$CANDIDATE"
+      break
+    fi
+    CANDIDATE=$((CANDIDATE + 1))
+    [ "$CANDIDATE" -gt 9 ] && CANDIDATE=1
+  done
+
+  MOVED_WID=""
   for ((i=3; i<COUNT; i++)); do
     extra_wid="${WINS[$i]}"
-    [ -n "$extra_wid" ] && aerospace move-node-to-workspace --window-id "$extra_wid" "$OVERFLOW_WS" 2>/dev/null
+    if [ -n "$extra_wid" ]; then
+      aerospace move-node-to-workspace --window-id "$extra_wid" "$TARGET_DEST" 2>/dev/null
+      MOVED_WID="$extra_wid"
+    fi
   done
-  
+
+  if [ -n "$MOVED_WID" ]; then
+    aerospace workspace "$TARGET_DEST" 2>/dev/null
+    aerospace focus --window-id "$MOVED_WID" 2>/dev/null
+  fi
+
   sketchybar --trigger aerospace_workspace_change 2>/dev/null
-  
-  # Update list and count
-  WINS=($(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}"))
-  COUNT=${#WINS[@]}
 fi
 
-# When exactly 3 windows are on the workspace, automatically format into Master-Stack
-if [ "$COUNT" -eq 3 ]; then
-  ~/.local/bin/aerospace-arrange-master-stack "$TARGET_WS"
+# 2. Check if remaining windows are 3, and ensure master-stack layout
+CURRENT_WINS=()
+while IFS='|' read -r wid layout; do
+  wid="$(echo "$wid" | tr -d ' ')"
+  layout="$(echo "$layout" | tr -d ' ')"
+  [ -z "$wid" ] && continue
+  if [ "$layout" != "floating" ]; then
+    CURRENT_WINS+=("$wid")
+  fi
+done < <(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}|%{window-layout}" 2>/dev/null)
+
+CURRENT_COUNT=${#CURRENT_WINS[@]}
+
+if [ "$CURRENT_COUNT" -eq 3 ]; then
+  ~/.local/bin/aerospace-arrange-master-stack "$TARGET_WS" 2>/dev/null
+elif [ "$CURRENT_COUNT" -eq 2 ]; then
+  ~/.local/bin/aerospace-arrange-master-stack "$TARGET_WS" 2>/dev/null
 fi

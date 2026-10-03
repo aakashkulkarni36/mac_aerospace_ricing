@@ -27,8 +27,14 @@ ${DEEP_CYAN}${BOLD}━━ 🔄 2. Window Movement ━━━━━━━━━━
   ${LAVENDER}Alt + Shift + k${RESET}     Move / Swap Window Up
   ${LAVENDER}Alt + Shift + l${RESET}     Move / Swap Window Right
 
-${DEEP_CYAN}${BOLD}━━ 🧩 3. Hyprland Master-Stack Layouts ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
-  ${LAVENDER}Alt + m${RESET}           Format into Master-Stack (Left half master + Right stack)
+${DEEP_CYAN}${BOLD}━━ 🧩 3. Hyprland Master-Stack Layouts & Toggles ━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${LAVENDER}Alt + ,${RESET}           Smart Multi-Layout Toggle:
+                        • 2 Windows: Toggles Horizontal <-> Vertical
+                        • 3 Windows: Cycles:
+                          1) Top Master (1/2 top, 2 apps left/right below)
+                          2) Left Master (1/2 left, 2 apps stacked right)
+                          3) 3 Columns (Horizontal side-by-side)
+                        • Automatically unfloats any floating window
   ${LAVENDER}Alt + \\${RESET}           Join with Right (Master + Column split)
   ${LAVENDER}Alt + Shift + \\${RESET}     Join with Left
   ${LAVENDER}Alt + -${RESET}           Join with Below (Stack windows vertically)

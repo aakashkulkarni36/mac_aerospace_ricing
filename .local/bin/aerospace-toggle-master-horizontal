@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 
-# Robust Smart Layout Toggle (Alt + ,):
-# Compatible with macOS default bash 3.2 (no mapfile or bash 4+ features).
-# 1. Unfloats any floating window on the current workspace back into tiling mode.
-# 2. When 2 windows:
-#    - If horizontal, toggles to vertical (stacked).
-#    - If vertical, toggles to horizontal (side-by-side).
-# 3. When 3 windows:
-#    - If already in Master-Stack (1 master on left, 2 stacked on right), toggles to 3 side-by-side columns (horizontal).
-#    - If in columns or messy layout, flattens and groups into Master-Stack (1/2 left master + 1/4 top right + 1/4 bottom right).
-# 4. Balances sizes evenly and restores active focus.
+# ==============================================================================
+# Smart Master & Dual-Orientation Toggle (Alt + ,)
+# Handles 1 window, 2 windows, and 3 windows.
+#
+# For 3 windows:
+#   Mode 1 (Left Master): Left 1/2 (1 app full height) + Right 1/2 (2 apps stacked up & down)
+#   Mode 2 (Top Master):  Top 1/2 (1 app full width) + Bottom 1/2 (2 apps side-by-side left & right)
+#   Mode 3 (3 Columns):   3 vertical side-by-side columns
+# ==============================================================================
 
 WS="$(aerospace list-workspaces --focused 2>/dev/null || echo 1)"
 ORIGINAL_FOCUS="$(aerospace list-windows --focused --format "%{window-id}" 2>/dev/null)"
 
-# 1. Unfloat any floating windows on this workspace
-aerospace list-windows --workspace "$WS" --format "%{window-id}|%{window-layout}" | while IFS='|' read -r wid layout; do
+# 1. Unfloat any floating window on this workspace
+aerospace list-windows --workspace "$WS" --format "%{window-id}|%{window-layout}" 2>/dev/null | while IFS='|' read -r wid layout; do
   wid="$(echo "$wid" | tr -d ' ')"
   layout="$(echo "$layout" | tr -d ' ')"
   if [ -n "$wid" ] && [ "$layout" = "floating" ]; then
@@ -23,11 +22,11 @@ aerospace list-windows --workspace "$WS" --format "%{window-id}|%{window-layout}
   fi
 done
 
-# Read window IDs into array (bash 3.2 compatible)
+# Collect window IDs
 WINS=()
 while IFS= read -r line; do
   [ -n "$line" ] && WINS+=("$line")
-done < <(aerospace list-windows --workspace "$WS" --format "%{window-id}")
+done < <(aerospace list-windows --workspace "$WS" --format "%{window-id}" 2>/dev/null)
 
 COUNT=${#WINS[@]}
 
@@ -35,9 +34,12 @@ if [ "$COUNT" -le 1 ]; then
   exit 0
 fi
 
+STATE_FILE="/tmp/aerospace_layout_state_${WS}"
+PREV_STATE="0"
+[ -f "$STATE_FILE" ] && PREV_STATE="$(cat "$STATE_FILE" 2>/dev/null || echo 0)"
+
 if [ "$COUNT" -eq 2 ]; then
-  ROOT_LAYOUT="$(aerospace list-windows --workspace "$WS" --format "%{workspace-root-container-layout}" | head -n1 | tr -d ' ')"
-  
+  ROOT_LAYOUT="$(aerospace list-windows --workspace "$WS" --format "%{workspace-root-container-layout}" 2>/dev/null | head -n1 | tr -d ' ')"
   aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
   if [ "$ROOT_LAYOUT" = "v_tiles" ] || [ "$ROOT_LAYOUT" = "v_accordion" ]; then
     aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
@@ -47,37 +49,37 @@ if [ "$COUNT" -eq 2 ]; then
   aerospace balance-sizes 2>/dev/null
 
 elif [ "$COUNT" -eq 3 ]; then
-  # Detect if workspace is currently in Master-Stack
-  V_COUNT=0
-  for wid in "${WINS[@]}"; do
-    parent_layout="$(aerospace list-windows --workspace "$WS" --format "%{window-id}|%{window-parent-container-layout}" | grep "^${wid}|" | cut -d'|' -f2 | tr -d ' ')"
-    if [ "$parent_layout" = "v_tiles" ]; then
-      V_COUNT=$((V_COUNT + 1))
-    fi
-  done
+  NEXT_STATE=$(( (PREV_STATE + 1) % 3 ))
+  echo "$NEXT_STATE" > "$STATE_FILE"
 
-  if [ "$V_COUNT" -eq 2 ]; then
-    # Already Master-Stack -> Toggle to 3 side-by-side columns (horizontal)
-    aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
+  aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
+
+  W1="${WINS[0]}"
+  W2="${WINS[1]}"
+  W3="${WINS[2]}"
+
+  if [ "$NEXT_STATE" -eq 1 ]; then
+    # Mode 1: Left Master (Left half 1 app full height, Right half 2 apps stacked top and bottom)
     aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
-    aerospace balance-sizes 2>/dev/null
-  else
-    # Build Master-Stack: W1 on left (50% width), W2 & W3 stacked on right (50% height each)
-    aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
-    aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
-    
-    W1="${WINS[0]}"
-    W2="${WINS[1]}"
-    W3="${WINS[2]}"
-    
-    # Focus W3 and join-with left to nest W2 and W3 into a right vertical stack
     aerospace focus --window-id "$W3" 2>/dev/null
-    aerospace join-with left 2>/dev/null
+    aerospace move down 2>/dev/null
+    aerospace balance-sizes 2>/dev/null
+
+  elif [ "$NEXT_STATE" -eq 2 ]; then
+    # Mode 2: Top Master (Top half 1 app full width, Bottom half 2 apps side-by-side)
+    aerospace layout --workspace "$WS" --root vertical 2>/dev/null
+    aerospace focus --window-id "$W3" 2>/dev/null
+    aerospace move right 2>/dev/null
+    aerospace balance-sizes 2>/dev/null
+
+  else
+    # Mode 3: 3 side-by-side vertical columns
+    aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
     aerospace balance-sizes 2>/dev/null
   fi
 fi
 
-# Restore original focus
+# Restore focus
 if [ -n "$ORIGINAL_FOCUS" ]; then
   aerospace focus --window-id "$ORIGINAL_FOCUS" 2>/dev/null
 fi

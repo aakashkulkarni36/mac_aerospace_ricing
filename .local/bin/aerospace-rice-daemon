@@ -1,25 +1,23 @@
 #!/usr/bin/env bash
 
-# Real-time event listener for AeroSpace:
-# Listens to all window detections, focus changes, workspace switches, and unhiding from Dock.
-# Enforces:
-# 1. Strict max 3 tiled windows per workspace across all workspaces.
-# 2. When 3 windows are detected on a space, automatically splits Left Half (Master) + Right Half (2 vertical Stack).
-# 3. Dynamic SketchyBar updates.
+# ==============================================================================
+# Airtight Background Daemon for AeroSpace & SketchyBar
+# Continuously guards:
+#   1. Max 3 tiled windows per workspace (overflows 4th+ to next space immediately)
+#   2. Auto-arranges 3 windows into master-stack
+#   3. Real-time SketchyBar dynamic workspace synchronization
+# ==============================================================================
 
-pkill -f "aerospace subscribe" 2>/dev/null || true
+while true; do
+  FOCUSED_WS="$(aerospace list-workspaces --focused 2>/dev/null || echo 1)"
+  
+  # Check all non-empty workspaces
+  ALL_WS="$(aerospace list-workspaces --monitor all --empty no 2>/dev/null)"
+  for ws in $ALL_WS; do
+    ~/.local/bin/aerospace-enforce-max-tiles "$ws" 2>/dev/null
+  done
 
-# Track last state to avoid redundant work loops
-LAST_CHECK=0
+  sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED_WS" 2>/dev/null
 
-aerospace subscribe --all 2>/dev/null | while IFS= read -r line; do
-  NOW=$(date +%s)
-  # Debounce events occurring in rapid succession (within 200ms)
-  case "$line" in
-    *"window-detected"*|*"focused-workspace-changed"*|*"workspace-changed"*|*"focus-changed"*)
-      FOCUSED_WS=$(aerospace list-workspaces --focused 2>/dev/null || echo 1)
-      ~/.local/bin/aerospace-enforce-max-tiles "$FOCUSED_WS"
-      sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED_WS" 2>/dev/null
-      ;;
-  esac
+  sleep 0.5
 done

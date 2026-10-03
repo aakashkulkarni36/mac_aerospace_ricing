@@ -26,7 +26,7 @@ Quick reference for your custom macOS Hyprland-inspired tiling setup. Run `aeros
 ### 🧩 3. Hyprland Master-Stack Layouts & Toggles
 | Shortcut | Action | Description |
 | :--- | :--- | :--- |
-| `Alt + ,` | **Smart Master/Horizontal Toggle** | 2 wins: Toggle H $\leftrightarrow$ V; 3 wins: Master-Stack (1/2 + 1/4 + 1/4) $\leftrightarrow$ 3 cols; unfloats if floating |
+| `Alt + ,` | **Smart Multi-Layout Toggle** | Seamless single-shortcut layout switcher:<br>• **2 Apps**: Toggle between side-by-side (Horizontal) and top-and-bottom (Vertical).<br>• **3 Apps**: Cycles across:<br>&nbsp;&nbsp;1) **Top Master**: 1/2 top window + bottom half split into 2 apps (Left & Right).<br>&nbsp;&nbsp;2) **Left Master**: 1/2 left window + right half split into 2 apps (Top & Bottom).<br>&nbsp;&nbsp;3) **3 Columns**: 3 side-by-side vertical splits.<br>• Automatically unfloats any floating window into the tiled grid. |
 | `Alt + \` | **Join with Right** | Embed current window into right side column |
 | `Alt + Shift + \` | **Join with Left** | Embed current window into left side column |
 | `Alt + -` | **Join with Below** | Stack active window with window below it |

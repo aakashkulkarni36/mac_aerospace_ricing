@@ -1,37 +1,68 @@
 #!/usr/bin/env bash
 
-# When 3 windows are present on a workspace, arrange them as:
-# Left half: Master window (full height)
-# Right half: 2 stacked windows (top and bottom)
+# ==============================================================================
+# Arrange 3 windows into Master-Stack:
+# Left half: 1 Master window (full height)
+# Right half: 2 windows stacked vertically (up and down)
+# ==============================================================================
 
 WS="${1:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
+SIG_FILE="/tmp/aerospace_master_stack_${WS}.sig"
 
-# Get list of window IDs on this workspace
-WINS=($(aerospace list-windows --workspace "$WS" --format "%{window-id}"))
+WINS=()
+while IFS= read -r line; do
+  [ -n "$line" ] && WINS+=("$line")
+done < <(aerospace list-windows --workspace "$WS" --format "%{window-id}" 2>/dev/null)
+
 COUNT=${#WINS[@]}
 
 if [ "$COUNT" -eq 3 ]; then
+  CURRENT_SIG="$(printf '%s\n' "${WINS[@]}" | sort | tr '\n' '_')"
+  if [ -f "$SIG_FILE" ] && [ "$(cat "$SIG_FILE" 2>/dev/null)" = "$CURRENT_SIG" ]; then
+    exit 0
+  fi
+
+  FOCUSED_WID="$(aerospace list-windows --focused --format "%{window-id}" 2>/dev/null)"
+
   W1="${WINS[0]}"
   W2="${WINS[1]}"
   W3="${WINS[2]}"
 
-  # 1. Reset any deep nested containers
+  # 1. Reset nested tree
   aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
 
-  # 2. Put workspace into horizontal row layout
-  aerospace focus --window-id "$W1" 2>/dev/null
-  aerospace layout --window-id "$W1" horizontal 2>/dev/null
+  # 2. Put workspace into horizontal layout (side-by-side columns)
+  aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
 
   # 3. Stack W3 under W2 (the right column)
   aerospace focus --window-id "$W3" 2>/dev/null
-  aerospace join-with --window-id "$W3" down 2>/dev/null || true
+  aerospace move down 2>/dev/null
 
-  # 4. Return focus to W1 and balance sizes evenly (50% left, 50% right split)
+  # 4. Balance sizes evenly (50% left full-height, 50% right split top & bottom)
   aerospace focus --window-id "$W1" 2>/dev/null
   aerospace balance-sizes 2>/dev/null
+
+  # 5. Restore user's focus
+  if [ -n "$FOCUSED_WID" ]; then
+    aerospace focus --window-id "$FOCUSED_WID" 2>/dev/null
+  fi
+
+  echo "$CURRENT_SIG" > "$SIG_FILE"
+
 elif [ "$COUNT" -eq 2 ]; then
-  aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
-  aerospace focus --window-id "${WINS[0]}" 2>/dev/null
-  aerospace layout --window-id "${WINS[0]}" horizontal 2>/dev/null
-  aerospace balance-sizes 2>/dev/null
+  rm -f "$SIG_FILE"
+  CURRENT_SIG="$(printf '%s\n' "${WINS[@]}" | sort | tr '\n' '_')"
+  SIG_2_FILE="/tmp/aerospace_2win_${WS}.sig"
+  if [ ! -f "$SIG_2_FILE" ] || [ "$(cat "$SIG_2_FILE" 2>/dev/null)" != "$CURRENT_SIG" ]; then
+    FOCUSED_WID="$(aerospace list-windows --focused --format "%{window-id}" 2>/dev/null)"
+    aerospace flatten-workspace-tree --workspace "$WS" 2>/dev/null
+    aerospace layout --workspace "$WS" --root horizontal 2>/dev/null
+    aerospace balance-sizes 2>/dev/null
+    if [ -n "$FOCUSED_WID" ]; then
+      aerospace focus --window-id "$FOCUSED_WID" 2>/dev/null
+    fi
+    echo "$CURRENT_SIG" > "$SIG_2_FILE"
+  fi
+else
+  rm -f "$SIG_FILE" "/tmp/aerospace_2win_${WS}.sig"
 fi

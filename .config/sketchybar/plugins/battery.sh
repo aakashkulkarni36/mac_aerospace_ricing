@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
+NAME="${NAME:-battery}"
 
 PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')
 
-if [ "$PERCENTAGE" = "" ]; then
-  exit 0
-fi
+[ -z "$PERCENTAGE" ] && exit 0
 
 case ${PERCENTAGE} in
   9[0-9]|100) ICON="󰁹" ;;
@@ -15,8 +14,15 @@ case ${PERCENTAGE} in
   *) ICON="󰁺" ;;
 esac
 
-if [ "$CHARGING" != "" ]; then
+if [ -n "$CHARGING" ]; then
   ICON="󰂄"
+  COLOR="0xffa6e3a1" # Green
+elif [ "$PERCENTAGE" -le 20 ]; then
+  COLOR="0xfff38ba8" # Warning Red
+elif [ "$PERCENTAGE" -le 50 ]; then
+  COLOR="0xfff9e2af" # Caution Yellow
+else
+  COLOR="0xffa6e3a1" # Healthy Green
 fi
 
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+sketchybar --set "$NAME" icon="$ICON" icon.color="$COLOR" label="${PERCENTAGE}%"
