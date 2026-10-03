@@ -10,9 +10,11 @@ set -e
 # Wallpaper Database Definition
 # Index | Slug | WallhavenID | Title | Artist | File | Hex1 | Hex2 | ARGB1 | ARGB2 | TileBG | TileBorder | ItemHL | CardBG | CardBorder | BorderGradient | WS_BG | WS_Border
 WP_LIST=(
-  "1|meadow|5y3571|Meadow Vista|Stefan Hansson|$HOME/Pictures/Wallpapers/wallhaven-5y3571.jpg|#38bdf8|#06b6d4|0xff38bdf8|0xff06b6d4|0xc21e2d36|0x3874c7ec|0x3538bdf8|0xd818252d|0x4538bdf8|gradient(top_left=0xff38bdf8,bottom_right=0xff06b6d4)|0x4038bdf8|0x8038bdf8"
-  "2|highway|wekp5x|Golden Highway|Guillem H. Pongiluppi|$HOME/Pictures/Wallpapers/wallhaven-wekp5x.jpg|#f59e0b|#ea580c|0xfff59e0b|0xffea580c|0xc22b2219|0x38f59e0b|0x35f59e0b|0xd8241c14|0x45f59e0b|gradient(top_left=0xfffbbf24,bottom_right=0xffea580c)|0x40f59e0b|0x80f59e0b"
-  "3|horizon|lm1z2l|Twilight Horizon|Simon Stålenhag|$HOME/Pictures/Wallpapers/wallhaven-lm1z2l.jpg|#818cf8|#38bdf8|0xff818cf8|0xff38bdf8|0xc21f1e33|0x38818cf8|0x35818cf8|0xd81b1a2c|0x45818cf8|gradient(top_left=0xff818cf8,bottom_right=0xff38bdf8)|0x40818cf8|0x80818cf8"
+  "1|meadow|5y3571|Meadow Vista (OG)|Stefan Hansson|$HOME/Pictures/Wallpapers/wallhaven-5y3571.jpg|#38bdf8|#06b6d4|0xff38bdf8|0xff06b6d4|0xc21e2d36|0x3874c7ec|0x3538bdf8|0xd818252d|0x4538bdf8|gradient(top_left=0xff38bdf8,bottom_right=0xff06b6d4)|0x4038bdf8|0x8038bdf8"
+  "2|flight|ly36ll|Summer Flight|Bzsk|$HOME/Pictures/Wallpapers/wallhaven-ly36ll.png|#f59e0b|#38bdf8|0xfff59e0b|0xff38bdf8|0xc228221b|0x38f59e0b|0x35f59e0b|0xd8221c16|0x45f59e0b|gradient(top_left=0xfff59e0b,bottom_right=0xff38bdf8)|0x40f59e0b|0x80f59e0b"
+  "3|breeze|8g35ek|Breeze & Wildflowers|Gracile|$HOME/Pictures/Wallpapers/wallhaven-8g35ek.jpg|#10b981|#06b6d4|0xff10b981|0xff06b6d4|0xc2182c24|0x3810b981|0x3510b981|0xd814241d|0x4510b981|gradient(top_left=0xff10b981,bottom_right=0xff06b6d4)|0x4010b981|0x8010b981"
+  "4|sunset|zp5z2w|Sunset Grasslands|Ibuki Satsuki|$HOME/Pictures/Wallpapers/wallhaven-zp5z2w.png|#f97316|#818cf8|0xfff97316|0xff818cf8|0xc22b1e22|0x38f97316|0x35f97316|0xd824171a|0x45f97316|gradient(top_left=0xfff97316,bottom_right=0xff818cf8)|0x40f97316|0x80f97316"
+  "5|lake|d8vv8j|Lake Horizon|Gracile|$HOME/Pictures/Wallpapers/wallhaven-d8vv8j.jpg|#06b6d4|#60a5fa|0xff06b6d4|0xff60a5fa|0xc2182836|0x3806b6d4|0x3506b6d4|0xd814202d|0x4506b6d4|gradient(top_left=0xff06b6d4,bottom_right=0xff60a5fa)|0x4006b6d4|0x8006b6d4"
 )
 
 TOTAL_WP=${#WP_LIST[@]}
@@ -58,7 +60,7 @@ apply_wallpaper() {
 
   if [ -z "$selected_entry" ]; then
     echo "❌ Unknown wallpaper option: $target_idx"
-    echo "Available options: 1 (meadow), 2 (highway), 3 (horizon)"
+    echo "Available options: 1 (meadow), 2 (flight), 3 (breeze), 4 (sunset), 5 (lake)"
     exit 1
   fi
 
@@ -185,7 +187,7 @@ show_status() {
     fi
   done
   echo -e "\033[0;37m────────────────────────────────────────────────────────────────────\033[0m"
-  echo -e "Quick Switch: \033[1;36mswitch-wallpaper <1-3|next|prev|meadow|highway|horizon>\033[0m"
+  echo -e "Quick Switch: \033[1;36mswitch-wallpaper <1-5|next|prev|meadow|flight|breeze|sunset|lake>\033[0m"
   echo -e "AeroSpace   : \033[1;36mAlt + W\033[0m to cycle to next wallpaper"
   echo ""
 }
@@ -210,7 +212,7 @@ case "$ACTION" in
     prev_idx=$(( (curr - 2 + TOTAL_WP) % TOTAL_WP + 1 ))
     apply_wallpaper "$prev_idx"
     ;;
-  1|2|3|meadow|highway|horizon|5y3571|wekp5x|lm1z2l)
+  1|2|3|4|5|meadow|flight|breeze|sunset|lake|5y3571|ly36ll|8g35ek|zp5z2w|d8vv8j)
     apply_wallpaper "$ACTION"
     ;;
   menu)
@@ -218,7 +220,7 @@ case "$ACTION" in
     if [ -t 0 ]; then
       read -r -p "Select option [1-$TOTAL_WP, n(ext), p(rev), q(uit)]: " choice
       case "$choice" in
-        1|2|3) apply_wallpaper "$choice" ;;
+        1|2|3|4|5) apply_wallpaper "$choice" ;;
         n|next) 
           curr=$(get_active_index)
           apply_wallpaper "$(( curr % TOTAL_WP + 1 ))" 
@@ -233,7 +235,7 @@ case "$ACTION" in
     fi
     ;;
   *)
-    echo "Usage: switch-wallpaper [1|2|3|next|prev|status|meadow|highway|horizon]"
+    echo "Usage: switch-wallpaper [1-5|next|prev|status|meadow|flight|breeze|sunset|lake]"
     exit 1
     ;;
 esac

@@ -54,5 +54,5 @@ Quick reference for your custom macOS Hyprland-inspired tiling setup. Run `aeros
 | `Alt + w` | **Cycle Wallpaper** | Cycles sequentially through curated wallpapers (1 ➔ 2 ➔ 3 ➔ 1). |
 | `switch-wallpaper` | **Interactive Switcher** | Opens interactive menu showing active wallpaper and options. |
 | `switch-wallpaper status` | **Show Active Theme** | Prints current wallpaper, artist, and synchronized color tokens. |
-| `switch-wallpaper 1` / `2` / `3` | **Direct Select** | Selects `1` (Meadow Vista), `2` (Golden Highway), or `3` (Twilight Horizon). |
+| `switch-wallpaper 1` .. `5` | **Direct Select** | Selects `1` (Meadow Vista), `2` (Summer Flight), `3` (Breeze & Wildflowers), `4` (Sunset Grasslands), or `5` (Lake Horizon). |
 | `switch-wallpaper next` / `prev` | **Cycle Navigation** | Steps forward or backward through the wallpaper circle. |
