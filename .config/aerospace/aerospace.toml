@@ -6,9 +6,17 @@
 # Start AeroSpace at login
 start-at-login = true
 
+# Use current configuration schema
+config-version = 2
+
 # Normalizations
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Automatically start borders daemon (JankyBorders) if available
+after-startup-command = [
+    'exec-and-forget borders'
+]
 
 # Hyprland-style Window Gaps (px)
 [gaps]
@@ -18,16 +26,6 @@ outer.left       = 10
 outer.bottom     = 10
 outer.top        = 10
 outer.right      = 10
-
-# Automatically start borders daemon (JankyBorders) if available
-after-startup-command = [
-    'exec-and-forget which borders && borders'
-]
-
-# ------------------------------------------------------------------------------
-# Workspace Callbacks (integrates with external bars like Sketchybar)
-# ------------------------------------------------------------------------------
-after-login-command = []
 
 # ------------------------------------------------------------------------------
 # Keybindings - Hyprland / Vim Style
@@ -47,9 +45,9 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
-# --- Window Splitting & Layout ---
-alt-backslash = 'split horizontal'
-alt-minus     = 'split vertical'
+# --- Window Joining & Layout ---
+alt-backslash = 'join-with right'
+alt-minus     = 'join-with down'
 alt-e         = 'layout tiles horizontal vertical' # Toggle split orientation
 alt-s         = 'layout accordion horizontal vertical' # Hyprland / Sway tabbed-like view
 
@@ -57,7 +55,7 @@ alt-s         = 'layout accordion horizontal vertical' # Hyprland / Sway tabbed-
 alt-f       = 'fullscreen'
 alt-shift-f = 'layout floating tiling'
 
-# --- Workspace Switching (1-9, 0) ---
+# --- Workspace Switching (1-9) ---
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
