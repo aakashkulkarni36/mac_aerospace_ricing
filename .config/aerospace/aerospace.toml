@@ -16,7 +16,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 # Automatically start borders daemon and sketchybar on startup
 after-startup-command = [
     'exec-and-forget borders',
-    'exec-and-forget sketchybar', 'exec-and-forget ~/.local/bin/aerospace-rice-daemon'
+    'exec-and-forget sketchybar'
 ]
 
 # Notify SketchyBar and enforce max-3 window tile limit on workspace change
@@ -62,14 +62,15 @@ alt-down  = 'resize height +64'
 alt-up    = 'resize height -64'
 alt-right = 'resize width +64'
 
-# --- Layout Manipulation (Every permutation: horizontal, vertical, accordion) ---
+# --- Layout Manipulation ---
 alt-slash       = 'layout tiles horizontal vertical' # Toggle between row & column splits
 alt-comma       = 'layout horizontal'                # Force all windows side-by-side (columns)
 alt-period      = 'layout vertical'                  # Force all windows stacked (rows)
-alt-s           = 'layout accordion horizontal vertical' # Hyprland/Sway tabbed view
+alt-s           = 'layout accordion horizontal vertical' # Tabbed view
 alt-shift-space = 'flatten-workspace-tree'          # Reset messy nested containers back to flat layout
 
 # --- Join operations (To build 1 Master + 2 Stacked windows easily) ---
+alt-m               = 'exec-and-forget ~/.local/bin/aerospace-arrange-master-stack'
 alt-backslash       = 'join-with right'
 alt-minus           = 'join-with down'
 alt-shift-minus     = 'join-with up'
@@ -77,14 +78,12 @@ alt-shift-backslash = 'join-with left'
 
 # --- Balance window sizes (50/50 master stack split) ---
 alt-b = 'balance-sizes'
-alt-m = 'exec-and-forget ~/.local/bin/aerospace-arrange-master-stack'
 
 # --- Smart Fullscreen & Floating ---
-# Smart Fullscreen: moves other windows to adjacent space so they don't hide behind, and restores them on toggle off
 alt-f       = 'exec-and-forget ~/.local/bin/aerospace-smart-fullscreen'
 alt-shift-f = 'layout floating tiling'
 
-# --- Workspace Switching (Explicit target) ---
+# --- Workspace Switching ---
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -113,7 +112,7 @@ alt-tab = 'workspace-back-and-forth'
 alt-shift-r = 'reload-config'
 
 # ------------------------------------------------------------------------------
-# Window Callbacks / Rules (Exclude utility and modal popups from tiling)
+# Window Rules (Floating utility windows)
 # ------------------------------------------------------------------------------
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
