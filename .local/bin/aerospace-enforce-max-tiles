@@ -1,25 +1,35 @@
 #!/usr/bin/env bash
 
-# Strictly enforces a maximum of 3 tiled windows per workspace across all workspaces.
-# Only overflows if more than 3 windows exist.
-# Preserves user custom sizing and positions upon workspace switching!
+# Robustly enforces:
+# 1. Any time a 3rd window opens (or arrives from dock/unhide/fullscreen exit), automatically arrange:
+#    - Left half: full-height Master window
+#    - Right half: two windows stacked vertically (up and down)
+# 2. Strict max-3 limit: Any 4th (or extra) window is immediately overflowed to the next workspace ($N+1).
 
 TARGET_WS="${1:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
 
-# Get all tiled windows on this workspace
+# Get all non-floating window IDs on this workspace
 WINS=($(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}"))
 COUNT=${#WINS[@]}
 
+# If more than 3 windows exist, overflow the extra windows to the next workspace
 if [ "$COUNT" -gt 3 ]; then
-  # Target overflow workspace (current + 1 up to 9)
   OVERFLOW_WS=$((TARGET_WS + 1))
   [ "$OVERFLOW_WS" -gt 9 ] && OVERFLOW_WS=9
 
-  # Move any window past the 3rd to the overflow workspace
   for ((i=3; i<COUNT; i++)); do
     extra_wid="${WINS[$i]}"
     [ -n "$extra_wid" ] && aerospace move-node-to-workspace --window-id "$extra_wid" "$OVERFLOW_WS" 2>/dev/null
   done
   
   sketchybar --trigger aerospace_workspace_change 2>/dev/null
+  
+  # Update list and count
+  WINS=($(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}"))
+  COUNT=${#WINS[@]}
+fi
+
+# When exactly 3 windows are on the workspace, automatically format into Master-Stack
+if [ "$COUNT" -eq 3 ]; then
+  ~/.local/bin/aerospace-arrange-master-stack "$TARGET_WS"
 fi
