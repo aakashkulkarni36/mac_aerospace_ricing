@@ -16,7 +16,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 # Automatically start borders daemon and sketchybar on startup
 after-startup-command = [
     'exec-and-forget borders',
-    'exec-and-forget sketchybar'
+    'exec-and-forget sketchybar', 'exec-and-forget ~/.local/bin/aerospace-rice-daemon'
 ]
 
 # Notify SketchyBar and enforce max-3 window tile limit on workspace change

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Real-time event listener for AeroSpace:
+# Enforces:
+# 1. Max 3 tiled windows per workspace (overflows 4th+ to next space)
+# 2. When 3 windows exist, formats them as Left Half (Master) + Right Half (2 Stacked)
+# 3. Triggers SketchyBar workspace pill illumination immediately
+
+pkill -f "aerospace subscribe" 2>/dev/null || true
+
+aerospace subscribe --all 2>/dev/null | while IFS= read -r line; do
+  # Whenever window-detected, focused-workspace-changed, or focus-changed occurs:
+  case "$line" in
+    *"window-detected"*|*"focused-workspace-changed"*|*"workspace-changed"*)
+      FOCUSED_WS=$(aerospace list-workspaces --focused 2>/dev/null || echo 1)
+      ~/.local/bin/aerospace-enforce-max-tiles "$FOCUSED_WS"
+      sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED_WS" 2>/dev/null
+      ;;
+  esac
+done
