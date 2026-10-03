@@ -64,7 +64,7 @@ alt-right = 'resize width +64'
 
 # --- Layout Manipulation ---
 alt-slash       = 'layout tiles horizontal vertical' # Toggle between row & column splits
-alt-comma       = 'layout horizontal'                # Force all windows side-by-side (columns)
+alt-comma       = 'exec-and-forget ~/.local/bin/aerospace-toggle-master-horizontal' # Toggle Master-Stack <-> Horizontal
 alt-period      = 'layout vertical'                  # Force all windows stacked (rows)
 alt-s           = 'layout accordion horizontal vertical' # Tabbed view
 alt-shift-space = 'flatten-workspace-tree'          # Reset messy nested containers back to flat layout

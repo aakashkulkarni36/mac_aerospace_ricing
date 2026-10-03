@@ -1,44 +1,26 @@
 #!/usr/bin/env bash
 
-# Smart Fullscreen Toggle:
-# If toggling fullscreen ON when other windows share the space:
-# Moves the other windows to an adjacent overflow space so the focused window has the entire screen without hidden background clutter.
-# When fullscreen is toggled OFF, restores the stashed windows back to the original workspace.
+# Alt + f behavior:
+# 1. If window is fullscreen: exits fullscreen mode.
+# 2. If window is floating: returns it to tiling mode.
+# 3. If window is normal tiled: makes it fullscreen.
+# 4. If pressed again while fullscreen: exits fullscreen and makes it floating (as requested: "alt + f is full screen and alt + f should make it floating again").
 
-FOCUSED_WIN=$(aerospace list-windows --focused --format "%{window-id}" 2>/dev/null)
-CURRENT_WS=$(aerospace list-workspaces --focused 2>/dev/null || echo 1)
-STASH_FILE="/tmp/aerospace_stash_${CURRENT_WS}.txt"
+WIN_INFO="$(aerospace list-windows --focused --format "%{window-id}|%{window-is-fullscreen}|%{window-layout}")"
+IFS='|' read -r WID IS_FS LAYOUT <<< "$WIN_INFO"
 
-if [ -f "$STASH_FILE" ]; then
-  # Fullscreen is currently active with stashed windows -> toggle fullscreen off and bring windows back
-  aerospace fullscreen
-  while IFS= read -r wid; do
-    [ -n "$wid" ] && aerospace move-node-to-workspace --window-id "$wid" "$CURRENT_WS" 2>/dev/null
-  done < "$STASH_FILE"
-  rm -f "$STASH_FILE"
-  sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$CURRENT_WS" 2>/dev/null
+if [ -z "$WID" ]; then
   exit 0
 fi
 
-# Not currently stashed: check how many windows are in this workspace
-ALL_WINS=$(aerospace list-windows --workspace "$CURRENT_WS" --format "%{window-id}")
-WIN_COUNT=$(echo "$ALL_WINS" | grep -v '^$' | wc -l | tr -d ' ')
-
-if [ "$WIN_COUNT" -gt 1 ]; then
-  # Find an overflow workspace (e.g. current + 1 or next empty workspace)
-  TARGET_WS=$((CURRENT_WS + 1))
-  [ "$TARGET_WS" -gt 9 ] && TARGET_WS=9
-
-  > "$STASH_FILE"
-  for wid in $ALL_WINS; do
-    if [ "$wid" != "$FOCUSED_WIN" ]; then
-      echo "$wid" >> "$STASH_FILE"
-      aerospace move-node-to-workspace --window-id "$wid" "$TARGET_WS" 2>/dev/null
-    fi
-  done
-  aerospace fullscreen
-  sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$CURRENT_WS" 2>/dev/null
+if [ "$IS_FS" = "true" ]; then
+  # Currently fullscreen: exit fullscreen and toggle to floating
+  aerospace fullscreen off --fail-if-noop 2>/dev/null || aerospace fullscreen
+  aerospace layout floating 2>/dev/null
+elif [ "$LAYOUT" = "floating" ]; then
+  # Currently floating: switch back to tiling
+  aerospace layout tiling 2>/dev/null
 else
-  # Single window: normal fullscreen toggle
-  aerospace fullscreen
+  # Currently tiled: make fullscreen
+  aerospace fullscreen on --fail-if-noop 2>/dev/null || aerospace fullscreen
 fi

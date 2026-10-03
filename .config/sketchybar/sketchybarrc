@@ -3,7 +3,7 @@
 # ==============================================================================
 # Premium Hyprland Floating Islands - Split around MacBook Air M2 Camera Notch
 # Frosted Glass Aesthetic: Translucent deep-slate background (0x990f172a)
-# Dynamic Weather Pill + Smart Dynamic Workspaces
+# Dynamic Weather Pill + Smart Dynamic Workspaces + App Glyphs + Volume Slider
 # ==============================================================================
 source "$HOME/.config/sketchybar/colors.sh"
 
@@ -20,7 +20,6 @@ sketchybar --remove '/.*/'
 sketchybar --add event aerospace_workspace_change
 
 # Transparent Bar Container spanning top of screen
-# padding_left=10 and padding_right=10 matches AeroSpace outer.left=10 and outer.right=10
 sketchybar --bar \
   position=top \
   height=40 \
@@ -48,7 +47,6 @@ sketchybar --default \
 # ==============================================================================
 # LEFT PILL 1: Workspaces + Focused App (Leftmost)
 # ==============================================================================
-# Leading inner margin so space.1 sits comfortably inside pill squircle curvature
 sketchybar --add item pad_left left \
            --set pad_left width=6 icon.drawing=off label.drawing=off
 
@@ -57,13 +55,13 @@ for sid in 1 2 3 4 5; do
              --subscribe space."$sid" aerospace_workspace_change \
              --set space."$sid" \
                    label="$sid" \
-                   label.font="JetBrainsMono Nerd Font:Bold:11.5" \
+                   label.font="sketchybar-app-font:Regular:12.0" \
                    label.padding_left=6 \
                    label.padding_right=6 \
                    icon.drawing=off \
                    background.color="$ITEM_HIGHLIGHT" \
                    background.corner_radius=8 \
-                   background.height=20 \
+                   background.height=24 \
                    background.drawing=off \
                    script="$HOME/.config/sketchybar/plugins/aerospace.sh $sid" \
                    click_script="aerospace workspace $sid"
@@ -96,7 +94,6 @@ sketchybar --add bracket pill_workspaces pad_left space.1 space.2 space.3 space.
                  background.border_width=1.5 \
                  background.corner_radius=20 \
                  background.height=38 \
-                 background.blur_radius=30
 
 # Spacer between left pills
 sketchybar --add item spacer_left left \
@@ -124,7 +121,6 @@ sketchybar --add bracket pill_weather weather \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
                  background.height=38 \
-                 background.blur_radius=30
 
 # ==============================================================================
 # RIGHT PILL 1: Clock & Battery (Primary Status Pill)
@@ -156,21 +152,35 @@ sketchybar --add bracket pill_clock_battery battery clock \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
                  background.height=38 \
-                 background.blur_radius=30
 
 # Spacer between right pills
 sketchybar --add item spacer1 right \
            --set spacer1 width=8
 
 # ==============================================================================
-# RIGHT PILL 2: Network & Audio (Connectivity Pill)
+# RIGHT PILL 2: Network & Audio (Connectivity Pill + Volume Slider)
 # ==============================================================================
+sketchybar --add slider volume.slider right 46 \
+           --set volume.slider \
+                 slider.highlight_color="$SKY_BLUE" \
+                 slider.background.color=0x40334155 \
+                 slider.background.height=6 \
+                 slider.background.corner_radius=3 \
+                 slider.knob=󰝤 \
+                 slider.knob.font="JetBrainsMono Nerd Font:Bold:10.0" \
+                 slider.knob.color=0xffffffff \
+                 slider.percentage=$(osascript -e "output volume of (get volume settings)" 2>/dev/null || echo 50) \
+                 padding_left=0 \
+                 padding_right=8 \
+                 script="$HOME/.config/sketchybar/plugins/volume_slider.sh" \
+           --subscribe volume.slider volume_change mouse.clicked
+
 sketchybar --add item volume right \
            --subscribe volume volume_change \
            --set volume icon.color="$YELLOW" \
-                        icon.padding_left=10 \
-                        icon.padding_right=6 \
-                        label.padding_right=12 \
+                        icon.padding_left=8 \
+                        icon.padding_right=4 \
+                        label.padding_right=4 \
                         click_script="osascript -e 'set volume output muted not (output muted of (get volume settings))' && sketchybar --trigger volume_change" \
                         script="$HOME/.config/sketchybar/plugins/volume.sh"
 
@@ -179,18 +189,17 @@ sketchybar --add item wifi right \
                       icon.color="$DEEP_CYAN" \
                       icon.padding_left=10 \
                       icon.padding_right=6 \
-                      label.padding_right=10 \
+                      label.padding_right=8 \
                       click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
                       script="$HOME/.config/sketchybar/plugins/wifi.sh"
 
-sketchybar --add bracket pill_network_audio wifi volume \
+sketchybar --add bracket pill_network_audio wifi volume volume.slider \
            --set pill_network_audio \
                  background.color="$TILE_BG" \
                  background.border_color="$TILE_BORDER" \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
                  background.height=38 \
-                 background.blur_radius=30
 
 # Spacer between right pills
 sketchybar --add item spacer2 right \
@@ -224,8 +233,8 @@ sketchybar --add bracket pill_hardware cpu ram \
                  background.border_width=1.5 \
                  background.corner_radius=20 \
                  background.height=38 \
-                 background.blur_radius=30
 
 # Sync bar
 sketchybar --update
 sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused 2>/dev/null || echo 1)"
+sketchybar --trigger volume_change
