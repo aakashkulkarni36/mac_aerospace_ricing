@@ -16,6 +16,9 @@ export ITEM_HIGHLIGHT=0x501e293b
 sketchybar --bar hidden=off
 sketchybar --remove '/.*/'
 
+# Explicitly register custom event for AeroSpace workspace sync
+sketchybar --add event aerospace_workspace_change
+
 # Transparent Bar Container spanning top of screen
 # padding_left=10 and padding_right=10 matches AeroSpace outer.left=10 and outer.right=10
 sketchybar --bar \
@@ -127,7 +130,7 @@ sketchybar --add bracket pill_weather weather \
 # RIGHT PILL 1: Clock & Battery (Primary Status Pill)
 # ==============================================================================
 sketchybar --add item clock right \
-           --set clock update_freq=10 \
+           --set clock update_freq=1 \
                        icon="󱑎" \
                        icon.color="$SKY_BLUE" \
                        icon.padding_left=8 \

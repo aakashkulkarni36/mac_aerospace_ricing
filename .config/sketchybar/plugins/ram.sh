@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# RAM Pressure / Usage percentage with explicit label
+TARGET="${NAME:-ram}"
 MEM=$(memory_pressure | grep "System-wide memory free percentage:" | awk '{print 100 - $5}')
+[ -z "$MEM" ] && MEM="0"
 
-sketchybar --set "$NAME" icon="󰘚" label="RAM ${MEM}%"
+sketchybar --set "$TARGET" icon="󰘚" label="RAM Used ${MEM}%"

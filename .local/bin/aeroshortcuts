@@ -28,6 +28,7 @@ ${DEEP_CYAN}${BOLD}━━ 🔄 2. Window Movement ━━━━━━━━━━
   ${LAVENDER}Alt + Shift + l${RESET}     Move / Swap Window Right
 
 ${DEEP_CYAN}${BOLD}━━ 🧩 3. Hyprland Master-Stack Layouts ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}
+  ${LAVENDER}Alt + m${RESET}           Format into Master-Stack (Left half master + Right stack)
   ${LAVENDER}Alt + \\${RESET}           Join with Right (Master + Column split)
   ${LAVENDER}Alt + Shift + \\${RESET}     Join with Left
   ${LAVENDER}Alt + -${RESET}           Join with Below (Stack windows vertically)

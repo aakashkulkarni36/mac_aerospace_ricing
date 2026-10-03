@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Strictly enforces a maximum of 3 tiled windows per workspace across all workspaces.
-# If a 4th window opens or lands on any workspace, overflow extras to the next workspace.
-# If exactly 3 windows are on a workspace, ensure Master (left half) + Stack (right half top & bottom).
+# Only overflows if more than 3 windows exist.
+# Preserves user custom sizing and positions upon workspace switching!
 
 TARGET_WS="${1:-$(aerospace list-workspaces --focused 2>/dev/null || echo 1)}"
 
@@ -21,14 +21,5 @@ if [ "$COUNT" -gt 3 ]; then
     [ -n "$extra_wid" ] && aerospace move-node-to-workspace --window-id "$extra_wid" "$OVERFLOW_WS" 2>/dev/null
   done
   
-  # Trigger SketchyBar update
   sketchybar --trigger aerospace_workspace_change 2>/dev/null
-fi
-
-# Re-read count after overflow
-REMAINING_WINS=($(aerospace list-windows --workspace "$TARGET_WS" --format "%{window-id}"))
-REMAINING_COUNT=${#REMAINING_WINS[@]}
-
-if [ "$REMAINING_COUNT" -eq 3 ]; then
-  ~/.local/bin/aerospace-arrange-master-stack "$TARGET_WS"
 fi

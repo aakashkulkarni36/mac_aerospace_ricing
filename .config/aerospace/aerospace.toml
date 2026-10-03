@@ -77,6 +77,7 @@ alt-shift-backslash = 'join-with left'
 
 # --- Balance window sizes (50/50 master stack split) ---
 alt-b = 'balance-sizes'
+alt-m = 'exec-and-forget ~/.local/bin/aerospace-arrange-master-stack'
 
 # --- Smart Fullscreen & Floating ---
 # Smart Fullscreen: moves other windows to adjacent space so they don't hide behind, and restores them on toggle off
