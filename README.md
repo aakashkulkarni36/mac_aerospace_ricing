@@ -118,7 +118,10 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
       * Workspaces `1–3` assigned to the built-in Retina screen (`["built-in", "main"]`).
       * Workspaces `4–9` assigned to the external LG Ultrawide display (`["LG ULTRAWIDE", "secondary"]`).
       * Automatically falls back to available displays when unplugged without breaking workspace layouts.
-    * **Calibrated 10 pt Balanced Margins (`outer.top = 54`)**:
+    * **Calibrated 10 pt Balanced Margins with Notch Awareness**:
+      * On the external ultrawide (notchless display), `outer.top = 54 pt` places windows at `y = 54 pt`, leaving a clean 10 pt margin below SketchyBar (`y = 4..44 pt`).
+      * On the MacBook Air Liquid Retina display, macOS inherently offsets windows by the 37.5 pt hardware notch height. Using a monitor-specific rule `outer.top = [{ monitor."built-in" = 16 }, 54]` aligns windows at the identical `y = 54 pt` coordinate on both screens.
+      * Result: Perfect, uniform 10 pt padding across all four sides (left, right, bottom, and top below the floating island bar) on both built-in and external monitors.
       * SketchyBar spans `y = 4..44 pt` (height 40, offset 4).
       * AeroSpace outer top gap set to `54 pt`, delivering an exact **10 pt visual margin** below the floating status bar.
       * Matches `outer.bottom = 10`, `outer.left = 10`, and `outer.right = 10` for mathematical symmetry on both displays.
