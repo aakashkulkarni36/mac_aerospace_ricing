@@ -112,3 +112,16 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
       * Available via aliases: `wallpaper-switcher` and `swp`.
       * Mapped to global shortcut **`Alt + w`** in AeroSpace.
 
+12. **Multi-Monitor & Ultrawide Display Alignment**:
+    * **Dual-Display Geometry**: Full native support for dual-monitor setups pairing the MacBook Air Liquid Retina display (1710x1112 pt) with an external **LG 21:9 Ultrawide Monitor** (2560x1080 @ 60Hz native).
+    * **Deterministic Workspace Pinning**:
+      * Workspaces `1–3` assigned to the built-in Retina screen (`["built-in", "main"]`).
+      * Workspaces `4–9` assigned to the external LG Ultrawide display (`["LG ULTRAWIDE", "secondary"]`).
+      * Automatically falls back to available displays when unplugged without breaking workspace layouts.
+    * **Calibrated 10 pt Balanced Margins (`outer.top = 54`)**:
+      * SketchyBar spans `y = 4..44 pt` (height 40, offset 4).
+      * AeroSpace outer top gap set to `54 pt`, delivering an exact **10 pt visual margin** below the floating status bar.
+      * Matches `outer.bottom = 10`, `outer.left = 10`, and `outer.right = 10` for mathematical symmetry on both displays.
+    * **Ultrawide Master-Stack Layout**:
+      * In 21:9 aspect ratio, 3 windows automatically arrange into a 50/50 master-stack (full-height master on the left, dual vertically stacked windows on the right, each with exact 10 pt spacing).
+
