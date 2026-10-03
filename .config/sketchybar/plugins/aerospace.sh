@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-# Highlight the active workspace in SketchyBar
 if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
-  sketchybar --set "$NAME" background.drawing=on \
-                           background.color=0xff7aa2f7 \
-                           label.color=0xff15161e \
-                           icon.color=0xff15161e
+  sketchybar --set "$NAME" \
+    background.drawing=on \
+    background.color=0xff38bdf8 \
+    background.corner_radius=15 \
+    background.height=28 \
+    label.color=0xff0f172a
 else
-  sketchybar --set "$NAME" background.drawing=off \
-                           label.color=0xffc0caf5 \
-                           icon.color=0xff7aa2f7
+  sketchybar --set "$NAME" \
+    background.drawing=off \
+    label.color=0xffcdd6f4
 fi

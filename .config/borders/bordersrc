@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# JankyBorders - Hyprland Style Active Window Accent Borders
-# Theme: Tokyo Night / Electric Blue active border with rounded corners
+# JankyBorders - Wallpaper Cohesive Cyan / Sky Blue Gradient
+# Sampled directly from wallhaven-5y3571: Electric Sky Blue (0xff38bdf8) into Vibrant Cyan (0xff06b6d4)
 
 borders \
     style=round \
-    width=4.0 \
+    width=4.5 \
     hidpi=on \
-    active_color=0xff7aa2f7 \
-    inactive_color=0x4024283b \
-    background_color=0x201a1b26
+    active_color='gradient(top_left=0xff38bdf8,bottom_right=0xff06b6d4)' \
+    inactive_color=0x251e293b \
+    background_color=0x200f172a

@@ -27,14 +27,13 @@ exec-on-workspace-change = [
 ]
 
 # Hyprland-style Window Gaps (px)
-# outer.top = 48 gives clean breathing room beneath the floating status bar
 [gaps]
-inner.horizontal = 10
-inner.vertical   = 10
-outer.left       = 12
-outer.bottom     = 12
-outer.top        = 48
-outer.right      = 12
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 10
+outer.bottom     = 10
+outer.top        = 10
+outer.right      = 10
 
 # ------------------------------------------------------------------------------
 # Keybindings - Hyprland / Vim Style
@@ -60,17 +59,27 @@ alt-down  = 'resize height +64'
 alt-up    = 'resize height -64'
 alt-right = 'resize width +64'
 
-# --- Window Joining & Layout ---
-alt-backslash = 'join-with right'
-alt-minus     = 'join-with down'
-alt-e         = 'layout tiles horizontal vertical' # Toggle split orientation
-alt-s         = 'layout accordion horizontal vertical' # Hyprland / Sway tabbed-like view
+# --- Layout Manipulation (Every permutation: horizontal, vertical, accordion) ---
+alt-slash       = 'layout tiles horizontal vertical' # Toggle between row & column splits
+alt-comma       = 'layout horizontal'                # Force all windows side-by-side (columns)
+alt-period      = 'layout vertical'                  # Force all windows stacked (rows)
+alt-s           = 'layout accordion horizontal vertical' # Hyprland/Sway tabbed view
+alt-shift-space = 'flatten-workspace-tree'          # Reset messy nested containers back to flat layout
+
+# --- Join operations (To build 1 Master + 2 Stacked windows easily) ---
+alt-backslash       = 'join-with right'
+alt-minus           = 'join-with down'
+alt-shift-minus     = 'join-with up'
+alt-shift-backslash = 'join-with left'
+
+# --- Balance window sizes (50/50 master stack split) ---
+alt-b = 'balance-sizes'
 
 # --- Fullscreen & Floating ---
 alt-f       = 'fullscreen'
 alt-shift-f = 'layout floating tiling'
 
-# --- Workspace Switching (1-9) ---
+# --- Workspace Switching (Explicit target) ---
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'

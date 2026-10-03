@@ -1,85 +1,195 @@
 #!/usr/bin/env bash
 
-# Source Colors
+# ==============================================================================
+# Premium Hyprland Floating Islands - Split around MacBook Air M2 Camera Notch
+# Pixel-perfect alignment with AeroSpace window boundaries (padding=10, margin=0)
+# ==============================================================================
 source "$HOME/.config/sketchybar/colors.sh"
 
-# Global Bar Settings - Floating Hyprland Waybar Pill Style
+export SKY_BLUE=0xff38bdf8
+export DEEP_CYAN=0xff06b6d4
+export TILE_BG=0xdd0f172a
+export TILE_BORDER=0x4538bdf8
+export ITEM_HIGHLIGHT=0x501e293b
+
+sketchybar --bar hidden=off
+sketchybar --remove '/.*/'
+
+# Transparent Bar Container spanning top of screen
+# padding_left=10 and padding_right=10 exactly matches AeroSpace outer.left=10 and outer.right=10
 sketchybar --bar \
   position=top \
-  height=36 \
-  blur_radius=30 \
-  color="$BAR_COLOR" \
-  border_color="$BAR_BORDER_COLOR" \
-  border_width=1 \
-  corner_radius=12 \
-  margin=10 \
-  y_offset=6 \
-  padding_left=12 \
-  padding_right=12
+  height=40 \
+  blur_radius=0 \
+  color=0x00000000 \
+  border_width=0 \
+  margin=0 \
+  y_offset=4 \
+  padding_left=10 \
+  padding_right=10
 
-# Default item properties
+# Default item typography & icon-to-label spacing (generous separation)
 sketchybar --default \
-  icon.font="JetBrainsMono Nerd Font:Bold:14.0" \
-  label.font="JetBrainsMono Nerd Font:Bold:13.0" \
-  icon.color="$WHITE" \
-  label.color="$WHITE" \
-  background.height=26 \
-  background.corner_radius=8 \
-  background.padding_left=4 \
-  background.padding_right=4
+  icon.font="JetBrainsMono Nerd Font:Bold:13.5" \
+  label.font="JetBrainsMono Nerd Font:SemiBold:12.5" \
+  icon.color="$TEXT" \
+  label.color="$TEXT" \
+  icon.padding_left=8 \
+  icon.padding_right=6 \
+  label.padding_left=0 \
+  label.padding_right=10 \
+  background.height=32 \
+  background.corner_radius=16
 
-# ------------------------------------------------------------------------------
-# Left: Workspaces (AeroSpace 1 to 5)
-# ------------------------------------------------------------------------------
-SPACE_ICONS=("1" "2" "3" "4" "5")
-
-for i in "${!SPACE_ICONS[@]}"; do
-  sid=$((i+1))
+# ==============================================================================
+# LEFT ISLAND: Workspaces + Focused App (Left of camera notch)
+# ==============================================================================
+for sid in 1 2 3 4 5; do
   sketchybar --add item space."$sid" left \
              --subscribe space."$sid" aerospace_workspace_change \
              --set space."$sid" \
-                   icon="${SPACE_ICONS[i]}" \
-                   icon.padding_left=8 \
-                   icon.padding_right=8 \
-                   background.color="$ITEM_BG_COLOR" \
+                   label="$sid" \
+                   label.font="JetBrainsMono Nerd Font:Bold:13.0" \
+                   label.padding_left=10 \
+                   label.padding_right=10 \
+                   icon.drawing=off \
+                   background.color="$ITEM_HIGHLIGHT" \
+                   background.corner_radius=15 \
+                   background.height=30 \
                    background.drawing=off \
                    script="$HOME/.config/sketchybar/plugins/aerospace.sh $sid" \
                    click_script="aerospace workspace $sid"
 done
 
-# Separator
-sketchybar --add item chevron left \
-           --set chevron icon="" \
-                         icon.color="$BLUE" \
-                         icon.font="JetBrainsMono Nerd Font:Bold:11.0" \
-                         icon.padding_left=6 \
-                         icon.padding_right=6
+sketchybar --add item sep left \
+           --set sep label="|" \
+                     label.color="$OVERLAY0" \
+                     label.padding_left=4 \
+                     label.padding_right=6 \
+                     icon.drawing=off
 
-# Active App Title
 sketchybar --add item front_app left \
            --subscribe front_app front_app_switched \
            --set front_app \
-                 icon.drawing=off \
-                 label.color="$CYAN" \
+                 icon="󱂬" \
+                 icon.font="JetBrainsMono Nerd Font:Bold:13.5" \
+                 icon.color="$SKY_BLUE" \
+                 icon.padding_left=6 \
+                 icon.padding_right=6 \
+                 label.color="$TEXT" \
+                 label.font="JetBrainsMono Nerd Font:SemiBold:12.5" \
+                 label.padding_right=12 \
                  script='sketchybar --set $NAME label="$INFO"'
 
-# ------------------------------------------------------------------------------
-# Right: Battery & Clock
-# ------------------------------------------------------------------------------
+sketchybar --add bracket left_island space.1 space.2 space.3 space.4 space.5 sep front_app \
+           --set left_island \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38 \
+                 background.blur_radius=30
+
+# ==============================================================================
+# RIGHT ISLAND 1: Clock & Battery (Primary Status Pill)
+# ==============================================================================
 sketchybar --add item clock right \
            --set clock update_freq=10 \
                        icon="󱑎" \
-                       icon.color="$YELLOW" \
-                       background.color="$ITEM_BG_COLOR" \
-                       background.drawing=on \
+                       icon.color="$SKY_BLUE" \
+                       icon.padding_left=8 \
+                       icon.padding_right=6 \
+                       label.padding_right=12 \
+                       click_script="open -a Calendar" \
                        script="$HOME/.config/sketchybar/plugins/clock.sh"
 
 sketchybar --add item battery right \
            --subscribe battery power_source_change system_woke \
            --set battery update_freq=60 \
                          icon.color="$GREEN" \
-                         background.color="$ITEM_BG_COLOR" \
-                         background.drawing=on \
+                         icon.padding_left=10 \
+                         icon.padding_right=6 \
+                         label.padding_right=10 \
+                         click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
                          script="$HOME/.config/sketchybar/plugins/battery.sh"
 
+sketchybar --add bracket pill_clock_battery battery clock \
+           --set pill_clock_battery \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38 \
+                 background.blur_radius=30
+
+# Spacer between right pills
+sketchybar --add item spacer1 right \
+           --set spacer1 width=8
+
+# ==============================================================================
+# RIGHT ISLAND 2: Network & Audio (Connectivity Pill)
+# ==============================================================================
+sketchybar --add item volume right \
+           --subscribe volume volume_change \
+           --set volume icon.color="$YELLOW" \
+                        icon.padding_left=10 \
+                        icon.padding_right=6 \
+                        label.padding_right=12 \
+                        click_script="osascript -e 'set volume output muted not (output muted of (get volume settings))' && sketchybar --trigger volume_change" \
+                        script="$HOME/.config/sketchybar/plugins/volume.sh"
+
+sketchybar --add item wifi right \
+           --set wifi update_freq=20 \
+                      icon.color="$DEEP_CYAN" \
+                      icon.padding_left=10 \
+                      icon.padding_right=6 \
+                      label.padding_right=10 \
+                      click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
+                      script="$HOME/.config/sketchybar/plugins/wifi.sh"
+
+sketchybar --add bracket pill_network_audio wifi volume \
+           --set pill_network_audio \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38 \
+                 background.blur_radius=30
+
+# Spacer between right pills
+sketchybar --add item spacer2 right \
+           --set spacer2 width=8
+
+# ==============================================================================
+# RIGHT ISLAND 3: Hardware Metrics (CPU & RAM Performance Pill)
+# ==============================================================================
+sketchybar --add item ram right \
+           --set ram update_freq=15 \
+                     icon.color="$MAROON" \
+                     icon.padding_left=8 \
+                     icon.padding_right=6 \
+                     label.padding_right=12 \
+                     click_script="open -a 'Activity Monitor'" \
+                     script="$HOME/.config/sketchybar/plugins/ram.sh"
+
+sketchybar --add item cpu right \
+           --set cpu update_freq=10 \
+                     icon.color="$PEACH" \
+                     icon.padding_left=10 \
+                     icon.padding_right=6 \
+                     label.padding_right=10 \
+                     click_script="open -a 'Activity Monitor'" \
+                     script="$HOME/.config/sketchybar/plugins/cpu.sh"
+
+sketchybar --add bracket pill_hardware cpu ram \
+           --set pill_hardware \
+                 background.color="$TILE_BG" \
+                 background.border_color="$TILE_BORDER" \
+                 background.border_width=1.5 \
+                 background.corner_radius=20 \
+                 background.height=38 \
+                 background.blur_radius=30
+
+# Sync bar
 sketchybar --update
+sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused 2>/dev/null || echo 1)"
