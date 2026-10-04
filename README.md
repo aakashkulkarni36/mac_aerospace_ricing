@@ -98,6 +98,10 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
       3. **Breeze & Wildflowers** (Gracile - [Wallhaven #8g35ek](https://wallhaven.cc/w/8g35ek)): 5640x2400 ultrawide rolling green meadow with wildflowers and utility poles under towering clouds. Accents: Emerald Green (`#10b981`) & Summer Cyan (`#06b6d4`), frosted jade glass (`0xc2182c24`).
       4. **Sunset Grasslands** (Ibuki Satsuki - [Wallhaven #zp5z2w](https://wallhaven.cc/w/zp5z2w)): 5160x2160 ultrawide sunset breeze across endless fields with flowing garments. Accents: Sunset Amber (`#f97316`) & Twilight Lavender (`#818cf8`), frosted sunset glass (`0xc22b1e22`).
       5. **Lake Horizon** (Gracile - [Wallhaven #d8vv8j](https://wallhaven.cc/w/d8vv8j)): 5640x2400 ultrawide mountain lake reflecting summer clouds. Accents: Vibrant Cyan (`#06b6d4`) & Azure Blue (`#60a5fa`), frosted crystal lake glass (`0xc2182836`).
+      6. **Mountain Pass Wanderer** (Pixiv #105664701 - [Wallhaven #7pxrwe](https://wallhaven.cc/w/7pxrwe)): 2500x1055 native 21:9 ultrawide alpine vista featuring a lone wanderer in a flowing dress against billowing summer cloudbanks. Accents: Cerulean Blue (`#38bdf8`) & Mountain Sage Lime (`#a3e635`), frosted alpine glass (`0xc21c2c36`).
+      7. **Twilight Horizon** (Gracile - [Wallhaven #e7d368](https://wallhaven.cc/w/e7d368)): 5640x2400 5K ultrawide golden hour dusk with luminous amber clouds descending into deep twilight. Accents: Sunset Amber (`#f59e0b`) & Indigo (`#6366f1`), frosted twilight glass (`0xc22b1f24`).
+      8. **Sunlight Canopies** (Gracile - [Wallhaven #6lkdmq](https://wallhaven.cc/w/6lkdmq)): 5640x2400 5K ultrawide warm golden sunlight filtering through rolling cumulus cloud towers over treetop horizons. Accents: Terracotta Sunset (`#ea580c`) & Deep Teal (`#0d9488`), frosted dusk glass (`0xc228201c`).
+      9. **Twilight Bloom** (Ibuki Satsuki - [Wallhaven #d8p83m](https://wallhaven.cc/w/d8p83m)): 1890x1134 serene pastoral dusk with fluttering garments, blossom branches, and evening clouds. Accents: Twilight Lavender (`#818cf8`) & Sakura Bloom (`#f472b6`), frosted plum glass (`0xc2241e30`).
     * **Full Synchronized Switching**:
       * Instantly sets the macOS desktop across all connected displays via native `NSWorkspace` APIs.
       * Updates SketchyBar frosted floating island backgrounds, pill borders, active space badges, and popup card themes (`current_theme.sh`).
@@ -108,7 +112,7 @@ A premium, lightweight, Hyprland-inspired tiling window manager setup for macOS 
       * `switch-wallpaper`: Interactive selector displaying the active wallpaper and menu options.
       * `switch-wallpaper next` / `prev`: Cycle forward or backward through the collection.
       * `switch-wallpaper status`: Shows current wallpaper, artist, and live color tokens.
-      * `switch-wallpaper <1-5|meadow|flight|breeze|sunset|lake>`: Instant direct theme activation.
+      * `switch-wallpaper <1-9|meadow|flight|breeze|sunset|lake|ridge|twilight|canopy|bloom>`: Instant direct theme activation.
       * Available via aliases: `wallpaper-switcher` and `swp`.
       * Mapped to global shortcut **`Alt + w`** in AeroSpace.
 
